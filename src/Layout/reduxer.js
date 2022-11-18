@@ -53,7 +53,6 @@ export const ReduxFooter = (() => {
     dictionaryVersion: state.versionInfo.dictionaryVersion,
     apiVersion: state.versionInfo.apiVersion,
     hidden: isFooterHidden(state.bar.active),
-    externalURL: components.footer?.externalURL,
   });
 
   return connect(mapStateToProps)(Footer);

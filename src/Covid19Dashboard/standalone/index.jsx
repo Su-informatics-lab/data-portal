@@ -4,6 +4,7 @@ import IllinoisMapChart from '../IllinoisMapChart';
 import './standalone.less';
 import { mapboxAPIToken } from '../../localconf';
 import countyCodes from './data/CountyCodeList.json';
+import jhuJsonByLevelLatest from './data/jhu_json_by_level_2021-05-24.json';
 
 const fetchTimeSeriesData = () => {
 };
@@ -17,6 +18,7 @@ class Example extends React.Component {
             {mapboxAPIToken
             && (
               <IllinoisMapChart
+                jsonByLevel={jhuJsonByLevelLatest}
                 modeledFipsList={countyCodes.codes}
                 fetchTimeSeriesData={fetchTimeSeriesData}
               />

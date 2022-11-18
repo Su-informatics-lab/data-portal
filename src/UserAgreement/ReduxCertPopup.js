@@ -3,7 +3,7 @@ import CertPopup from './CertPopup';
 import { requiredCerts, userAPIPath } from '../configs';
 import { fetchWithCreds, refreshUser } from '../actions';
 import { minus } from '../utils';
-import { certs, hostname, basename } from '../localconf';
+import { certs, hostname } from '../localconf';
 
 /**
  * Redux action triggered by quiz submit
@@ -23,10 +23,9 @@ export const submitForm = (data, questionList, quiz) => (dispatch) => fetchWithC
 })
   .then(
     ({ status }) => {
-      const cleanBasename = basename.replace(/^\/+/g, '').replace(/(dev.html$)/, '');
       switch (status) {
       case 201:
-        window.location = `${hostname}${cleanBasename}`;
+        window.location = `${hostname}`;
         return dispatch(refreshUser());
       default:
         return dispatch({

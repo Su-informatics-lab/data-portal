@@ -7,7 +7,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 import querystring from 'querystring';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAngleUp, faAngleDown, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import ReactGA from 'react-ga';
 import { Helmet } from 'react-helmet';
 import { datadogRum } from '@datadog/browser-rum';
@@ -43,7 +43,7 @@ import getReduxStore from './reduxStore';
 import { ReduxNavBar, ReduxTopBar, ReduxFooter } from './Layout/reduxer';
 import ReduxQueryNode, { submitSearchForm } from './QueryNode/ReduxQueryNode';
 import {
-  basename, dev, gaDebug, workspaceUrl, workspaceErrorUrl, Error403Url,
+  basename, dev, gaDebug, workspaceUrl, workspaceErrorUrl,
   indexPublic, explorerPublic, enableResourceBrowser, resourceBrowserPublic, enableDAPTracker,
   discoveryConfig, commonsWideAltText, ddApplicationId, ddClientToken, ddEnv, ddSampleRate,
 } from './localconf';
@@ -58,7 +58,6 @@ import isEnabled from './helpers/featureFlags';
 import sessionMonitor from './SessionMonitor';
 import workspaceSessionMonitor from './Workspace/WorkspaceSessionMonitor';
 import Workspace from './Workspace';
-import WorkspaceRegistration from './WorkspaceRegistration';
 import ResourceBrowser from './ResourceBrowser';
 import Discovery from './Discovery';
 import ReduxWorkspaceShutdownPopup from './Popup/ReduxWorkspaceShutdownPopup';
@@ -66,7 +65,6 @@ import ReduxWorkspaceShutdownBanner from './Popup/ReduxWorkspaceShutdownBanner';
 import ErrorWorkspacePlaceholder from './Workspace/ErrorWorkspacePlaceholder';
 import { ReduxStudyViewer, ReduxSingleStudyViewer } from './StudyViewer/reduxer';
 import NotFound from './components/NotFound';
-import ErrorPage403 from './components/ErrorPage403';
 
 // monitor user's session
 sessionMonitor.start();
@@ -81,10 +79,8 @@ async function init() {
 
   // Datadog setup
   if (ddApplicationId && !ddClientToken) {
-    // eslint-disable-next-line no-console
     console.warn('Datadog applicationId is set, but clientToken is missing');
   } else if (!ddApplicationId && ddClientToken) {
-    // eslint-disable-next-line no-console
     console.warn('Datadog clientToken is set, but applicationId is missing');
   } else if (ddApplicationId && ddClientToken) {
     datadogRum.init({
@@ -113,7 +109,7 @@ async function init() {
     ],
   );
   // FontAwesome icons
-  library.add(faAngleUp, faAngleDown, faExternalLinkAlt);
+  library.add(faAngleUp, faAngleDown);
 
   // For any platform-wide branded logos (Gen3, CTDS logos), apply standardized
   // alt text. For the commons-specific logo, use the appName attribute to apply
@@ -351,24 +347,6 @@ async function init() {
                       (props) => <ProtectedContent component={Workspace} {...props} />
                     }
                   />
-                  {
-                    isEnabled('workspaceRegistration')
-                      ? (
-                        <Route
-                          exact
-                          path='/workspace/register'
-                          component={
-                            (props) => (
-                              <ProtectedContent
-                                component={WorkspaceRegistration}
-                                {...props}
-                              />
-                            )
-                          }
-                        />
-                      )
-                      : null
-                  }
                   <Route
                     exact
                     path={workspaceUrl}
@@ -511,10 +489,6 @@ async function init() {
                   <Route
                     path='/not-found'
                     component={NotFound}
-                  />
-                  <Route
-                    path={Error403Url}
-                    component={ErrorPage403}
                   />
                   <Route
                     exact

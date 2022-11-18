@@ -7,7 +7,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 import querystring from 'querystring';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAngleUp, faAngleDown, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import ReactGA from 'react-ga';
 import { Helmet } from 'react-helmet';
 import { datadogRum } from '@datadog/browser-rum';
@@ -43,7 +43,7 @@ import getReduxStore from './reduxStore';
 import { ReduxNavBar, ReduxTopBar, ReduxFooter } from './Layout/reduxer';
 import ReduxQueryNode, { submitSearchForm } from './QueryNode/ReduxQueryNode';
 import {
-  basename, dev, gaDebug, workspaceUrl, workspaceErrorUrl, Error403Url,
+  basename, dev, gaDebug, workspaceUrl, workspaceErrorUrl,
   explorerPublic, enableResourceBrowser, resourceBrowserPublic, enableDAPTracker,
   discoveryConfig, ddApplicationId, ddClientToken, ddEnv, ddSampleRate,
 } from './localconf';
@@ -64,11 +64,7 @@ import ReduxWorkspaceShutdownPopup from './Popup/ReduxWorkspaceShutdownPopup';
 import ReduxWorkspaceShutdownBanner from './Popup/ReduxWorkspaceShutdownBanner';
 import ErrorWorkspacePlaceholder from './Workspace/ErrorWorkspacePlaceholder';
 import { ReduxStudyViewer, ReduxSingleStudyViewer } from './StudyViewer/reduxer';
-import StudyRegistration from './StudyRegistration';
-import WorkspaceRegistration from './WorkspaceRegistration';
-import ReduxStudyRegistrationRequestForm from './StudyRegistration/ReduxStudyRegistrationRequestForm';
 import NotFound from './components/NotFound';
-import ErrorPage403 from './components/ErrorPage403';
 
 // monitor user's session
 sessionMonitor.start();
@@ -83,10 +79,8 @@ async function init() {
 
   // Datadog setup
   if (ddApplicationId && !ddClientToken) {
-    // eslint-disable-next-line no-console
     console.warn('Datadog applicationId is set, but clientToken is missing');
   } else if (!ddApplicationId && ddClientToken) {
-    // eslint-disable-next-line no-console
     console.warn('Datadog clientToken is set, but applicationId is missing');
   } else if (ddApplicationId && ddClientToken) {
     datadogRum.init({
@@ -115,7 +109,7 @@ async function init() {
     ],
   );
   // FontAwesome icons
-  library.add(faAngleUp, faAngleDown, faExternalLinkAlt);
+  library.add(faAngleUp, faAngleDown);
 
   render(
     <div>
@@ -174,28 +168,19 @@ async function init() {
                       )
                     }
                   />
-                  {isEnabled('discovery')
-                    ? (
-                      <Route
-                        exact
-                        path='/'
-                        component={
-                          (props) => (
-                            <ProtectedContent
-                              public={discoveryConfig.public !== false}
-                              component={Discovery}
-                              {...props}
-                            />
-                          )
-                        }
-                      />
-                    ) : (
-                      <Route
-                        exact
-                        path='/'
-                        component={NotFound}
-                      />
-                    )}
+                  <Route
+                    exact
+                    path='/'
+                    component={
+                      (props) => (
+                        <ProtectedContent
+                          public={discoveryConfig.public !== false}
+                          component={Discovery}
+                          {...props}
+                        />
+                      )
+                    }
+                  />
                   <Route
                     exact
                     path='/submission'
@@ -353,24 +338,6 @@ async function init() {
                       (props) => <ProtectedContent component={Workspace} {...props} />
                     }
                   />
-                  {
-                    isEnabled('workspaceRegistration')
-                      ? (
-                        <Route
-                          exact
-                          path='/workspace/register'
-                          component={
-                            (props) => (
-                              <ProtectedContent
-                                component={WorkspaceRegistration}
-                                {...props}
-                              />
-                            )
-                          }
-                        />
-                      )
-                      : null
-                  }
                   <Route
                     exact
                     path={workspaceUrl}
@@ -511,50 +478,9 @@ async function init() {
                         }
                       />
                     )}
-                  {
-                    isEnabled('studyRegistration')
-                      ? (
-                        <Route
-                          exact
-                          path='/study-reg'
-                          component={
-                            (props) => (
-                              <ProtectedContent
-                                component={StudyRegistration}
-                                {...props}
-                              />
-                            )
-                          }
-                        />
-                      )
-                      : null
-                  }
-                  {
-                    isEnabled('studyRegistration')
-                      ? (
-                        <Route
-                          exact
-                          path='/study-reg/request-access'
-                          component={
-                            (props) => (
-                              <ProtectedContent
-                                component={ReduxStudyRegistrationRequestForm}
-                                {...props}
-                              />
-                            )
-                          }
-                        />
-                      )
-                      : null
-                  }
                   <Route
                     path='/not-found'
                     component={NotFound}
-                  />
-                  <Route
-                    exact
-                    path={Error403Url}
-                    component={ErrorPage403}
                   />
                   <Route
                     exact

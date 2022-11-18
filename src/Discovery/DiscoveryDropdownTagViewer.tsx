@@ -4,13 +4,12 @@ import {
   Select, Row, Col, Tag,
 } from 'antd';
 import { DiscoveryConfig } from './DiscoveryConfig';
-import { DiscoveryResource } from './Discovery';
 
 const { Option } = Select;
 
 interface DiscoveryTagViewerProps {
   config: DiscoveryConfig
-  studies?: DiscoveryResource[]
+  studies?: {__accessible: boolean, [any: string]: any}[]
   selectedTags: any
   setSelectedTags: any
 }
@@ -25,7 +24,7 @@ const DiscoveryDropdownTagViewer: React.FunctionComponent<DiscoveryTagViewerProp
     const tagMap = {};
     studies.forEach((study) => {
       const tagField = props.config.minimalFieldMapping.tagsListFieldName;
-      study[tagField]?.forEach((tag) => {
+      study[tagField].forEach((tag) => {
         if (tag.category === category.name) {
           tagMap[tag.name] = 1;
         }

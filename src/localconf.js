@@ -21,11 +21,9 @@ function buildConfig(opts) {
     protocol: typeof window !== 'undefined' ? `${window.location.protocol}` : 'http:',
     hostnameOnly: typeof window !== 'undefined' ? hostnameNoSubdomain : 'localhost',
     hostname: typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}/` : 'http://localhost/',
-    hostnameWithSubdomain: hostnameValue,
     fenceURL: process.env.FENCE_URL,
     indexdURL: process.env.INDEXD_URL,
     cohortMiddlewareURL: process.env.COHORT_MIDDLEWARE_URL,
-    gwasWorkflowURL: process.env.GWAS_WORKFLOW_URL,
     arboristURL: process.env.ARBORIST_URL,
     wtsURL: process.env.WTS_URL,
     workspaceURL: process.env.WORKSPACE_URL,
@@ -43,9 +41,8 @@ function buildConfig(opts) {
   // Override default basename if loading via /dev.html
   // dev.html loads bundle.js via https://localhost...
   //
-  const ensureTrailingSlashBasename = `${defaults.basename}${defaults.basename.endsWith('/') ? '' : '/'}`;
-  if (typeof window.location !== 'undefined' && window.location.pathname.indexOf(`${ensureTrailingSlashBasename}dev.html`) === 0) {
-    defaults.basename = `${ensureTrailingSlashBasename}dev.html`;
+  if (typeof window.location !== 'undefined' && window.location.pathname.indexOf(`${defaults.basename}dev.html`) === 0) {
+    defaults.basename += 'dev.html';
   }
 
   const {
@@ -56,11 +53,9 @@ function buildConfig(opts) {
     protocol,
     hostnameOnly,
     hostname,
-    hostnameWithSubdomain,
     fenceURL,
     indexdURL,
     cohortMiddlewareURL,
-    gwasWorkflowURL,
     arboristURL,
     wtsURL,
     workspaceURL,
@@ -81,6 +76,7 @@ function buildConfig(opts) {
     u.search = '';
     return u.href;
   }
+
   const submissionApiPath = `${hostname}api/v0/submission/`;
   const apiPath = `${hostname}api/`;
   const graphqlPath = `${hostname}api/v0/submission/graphql/`;
@@ -90,12 +86,8 @@ function buildConfig(opts) {
   const credentialCdisPath = `${userAPIPath}credentials/cdis/`;
   const coreMetadataPath = `${hostname}coremetadata/`;
   const indexdPath = typeof indexdURL === 'undefined' ? `${hostname}index/` : ensureTrailingSlash(indexdURL);
-
   const cohortMiddlewarePath = typeof cohortMiddlewareURL === 'undefined' ? `${hostname}cohort-middleware/` : ensureTrailingSlash(cohortMiddlewareURL);
-  const gwasWorkflowPath = typeof gwasWorkflowURL === 'undefined' ? `${hostname}ga4gh/wes/v2/` : ensureTrailingSlash(gwasWorkflowURL);
-
   const wtsPath = typeof wtsURL === 'undefined' ? `${hostname}wts/oauth2/` : ensureTrailingSlash(wtsURL);
-  const wtsAggregateAuthzPath = `${hostname}wts/aggregate/authz/mapping`;
   const externalLoginOptionsUrl = `${hostname}wts/external_oidc/`;
   let login = {
     url: `${userAPIPath}login/google?redirect=`,
@@ -107,15 +99,12 @@ function buildConfig(opts) {
   const logoutInactiveUsers = !(process.env.LOGOUT_INACTIVE_USERS === 'false');
   const useIndexdAuthz = !(process.env.USE_INDEXD_AUTHZ === 'false');
   const workspaceTimeoutInMinutes = process.env.WORKSPACE_TIMEOUT_IN_MINUTES || 480;
-  const graphqlSchemaUrl = `${hostname}${(basename && basename !== '/') ? basename : ''}/data/schema.json`;
+  const graphqlSchemaUrl = `${hostname}data/schema.json`;
   const workspaceUrl = typeof workspaceURL === 'undefined' ? '/lw-workspace/' : ensureTrailingSlash(workspaceURL);
   const workspaceErrorUrl = '/no-workspace-access/';
-  const Error403Url = '/403error';
   const workspaceOptionsUrl = `${workspaceUrl}options`;
   const workspaceStatusUrl = `${workspaceUrl}status`;
   const workspacePayModelUrl = `${workspaceUrl}paymodels`;
-  const workspaceSetPayModelUrl = `${workspaceUrl}setpaymodel`;
-  const workspaceAllPayModelsUrl = `${workspaceUrl}allpaymodels`;
   const workspaceTerminateUrl = `${workspaceUrl}terminate`;
   const workspaceLaunchUrl = `${workspaceUrl}launch`;
   const datasetUrl = `${hostname}api/search/datasets`;
@@ -145,7 +134,6 @@ function buildConfig(opts) {
   let ddSampleRate = 100;
   if (config.ddSampleRate) {
     if (Number.isNaN(config.ddSampleRate)) {
-      // eslint-disable-next-line no-console
       console.warn('Datadog sampleRate value in Portal config is not a number, ignoring');
     } else {
       ddSampleRate = config.ddSampleRate;
@@ -165,7 +153,7 @@ function buildConfig(opts) {
     const validOpenOptions = ['open-first', 'open-all', 'close-all'];
     studyViewerConfig.forEach((cfg, i) => {
       if (cfg.openMode
-        && !validOpenOptions.includes(cfg.openMode)) {
+      && !validOpenOptions.includes(cfg.openMode)) {
         studyViewerConfig[i].openMode = 'open-all';
       }
     });
@@ -207,7 +195,7 @@ function buildConfig(opts) {
     }
   });
 
-  const { dataAvailabilityToolConfig, stridesPortalURL } = config;
+  const { dataAvailabilityToolConfig } = config;
 
   let showSystemUse = false;
   if (components.systemUse && components.systemUse.systemUseText) {
@@ -217,11 +205,6 @@ function buildConfig(opts) {
   let showArboristAuthzOnProfile = false;
   if (config.showArboristAuthzOnProfile) {
     showArboristAuthzOnProfile = config.showArboristAuthzOnProfile;
-  }
-
-  let gwasTemplate = 'gwas-template-latest';
-  if (config.argoTemplate) {
-    gwasTemplate = config.argoTemplate;
   }
 
   let showFenceAuthzOnProfile = true;
@@ -285,26 +268,9 @@ function buildConfig(opts) {
   }
 
   const { discoveryConfig } = config;
-  const { registrationConfigs } = config;
-  const studyRegistrationConfig = (registrationConfigs && registrationConfigs.features)
-    ? (registrationConfigs.features.studyRegistrationConfig || {}) : {};
-  if (!studyRegistrationConfig.studyRegistrationTrackingField) {
-    studyRegistrationConfig.studyRegistrationTrackingField = 'registrant_username';
-  }
-  if (!studyRegistrationConfig.studyRegistrationValidationField) {
-    studyRegistrationConfig.studyRegistrationValidationField = 'is_registered';
-  }
-  if (!studyRegistrationConfig.studyRegistrationAccessCheckField) {
-    studyRegistrationConfig.studyRegistrationAccessCheckField = 'registration_authz';
-  }
-  if (!studyRegistrationConfig.studyRegistrationUIDField) {
-    studyRegistrationConfig.studyRegistrationUIDField = 'appl_id';
-  }
+
   const { workspacePageTitle } = config;
   const { workspacePageDescription } = config;
-  const workspaceRegistrationConfig = (registrationConfigs && registrationConfigs.features)
-    ? registrationConfigs.features.workspaceRegistrationConfig : null;
-  const kayakoConfig = registrationConfigs ? registrationConfigs.kayakoConfig : null;
 
   const colorsForCharts = {
     categorical9Colors: components.categorical9Colors ? components.categorical9Colors : [
@@ -344,105 +310,98 @@ function buildConfig(opts) {
     analysisTools.forEach((at) => {
       if (typeof at === 'string' || at instanceof String) {
         switch (at) {
-          case 'ndhHIV':
-            analysisApps.ndhHIV = {
-              title: 'NDH HIV Classifier',
-              description: 'Classify stored clinical data based on controller status.',
-              image: '/src/img/analysis-icons/hiv-classifier.svg',
-              visitIndexTypeName: config.HIVAppIndexTypeName || 'follow_up',
-            };
-            break;
-          case 'ndhVirus':
-            analysisApps.ndhVirus = {
-              title: 'NDH Virulence Simulation',
-              description: `This simulation runs a docker version of the Hypothesis Testing
+        case 'ndhHIV':
+          analysisApps.ndhHIV = {
+            title: 'NDH HIV Classifier',
+            description: 'Classify stored clinical data based on controller status.',
+            image: '/src/img/analysis-icons/hiv-classifier.svg',
+            visitIndexTypeName: config.HIVAppIndexTypeName || 'follow_up',
+          };
+          break;
+        case 'ndhVirus':
+          analysisApps.ndhVirus = {
+            title: 'NDH Virulence Simulation',
+            description: `This simulation runs a docker version of the Hypothesis Testing
           using Phylogenies (HyPhy) tool over data submitted in the NIAID Data Hub. \n
           The simulation is focused on modeling a Bayesian Graph Model (BGM) based on a binary matrix input.
           The implemented example predicts the virulence status of different influenza strains based on their mutations
           (the mutation panel is represented as the input binary matrix).`,
-              image: '/src/img/analysis-icons/virulence.png',
-            };
-            break;
-          case 'vaGWAS':
-            analysisApps.vaGWAS = {
-              title: 'vaGWAS',
-              description: 'Expression-based Genome-Wide Association Study',
-              image: '/src/img/analysis-icons/gwas.svg',
-              options: [
-                {
-                  label: 'Lung',
-                  value: 'Lung',
-                },
-                {
-                  label: 'Gastrointestina',
-                  value: 'Gastrointestina',
-                },
-                {
-                  label: 'Prostate',
-                  value: 'Prostate',
-                },
-                {
-                  label: 'Head and Neck',
-                  value: 'Head and Neck',
-                },
-                {
-                  label: 'Skin',
-                  value: 'Skin',
-                },
-                {
-                  label: 'NULL',
-                  value: 'NULL',
-                },
-                {
-                  label: 'Lymph Node',
-                  value: 'Lymph Node',
-                },
-                {
-                  label: 'Liver',
-                  value: 'Liver',
-                },
-                {
-                  label: 'Musculoskeleta',
-                  value: 'Musculoskeleta',
-                },
-                {
-                  label: 'Occipital Mass',
-                  value: 'Occipital Mass',
-                },
-                {
-                  label: 'Brain',
-                  value: 'Brain',
-                },
-                {
-                  label: 'BxType',
-                  value: 'BxType',
-                },
-              ],
-            };
-            break;
-          case 'GWASUIApp':
-            analysisApps.GWASUIApp = {
-              title: 'Gen3 GWAS',
-              description: 'Use this App to perform high throughput GWAS on Million Veteran Program (MVP) data, using the University of Washington Genesis pipeline',
-              image: '/src/img/analysis-icons/gwas.svg',
-            };
-            break;
-          case 'GWASResults':
-            analysisApps.GWASResults = {
-              title: 'GWAS Results',
-              description: 'Use this App to view status & results of submitted workflows',
-              image: '/src/img/analysis-icons/gwasResults.svg',
-            };
-            break;
-          case 'GWAS++':
-            analysisApps["GWAS++"] = {
-              title: "GWAS++",
-              description: 'Use this App to perform high throughput GWAS on Million Veteran Program (MVP) data, using the University of Washington Genesis pipeline',
-              image: '/src/img/analysis-icons/gwas.svg',
-            };
-            break;
-          default:
-            break;
+            image: '/src/img/analysis-icons/virulence.png',
+          };
+          break;
+        case 'vaGWAS':
+          analysisApps.vaGWAS = {
+            title: 'vaGWAS',
+            description: 'Expression-based Genome-Wide Association Study',
+            image: '/src/img/analysis-icons/gwas.svg',
+            options: [
+              {
+                label: 'Lung',
+                value: 'Lung',
+              },
+              {
+                label: 'Gastrointestina',
+                value: 'Gastrointestina',
+              },
+              {
+                label: 'Prostate',
+                value: 'Prostate',
+              },
+              {
+                label: 'Head and Neck',
+                value: 'Head and Neck',
+              },
+              {
+                label: 'Skin',
+                value: 'Skin',
+              },
+              {
+                label: 'NULL',
+                value: 'NULL',
+              },
+              {
+                label: 'Lymph Node',
+                value: 'Lymph Node',
+              },
+              {
+                label: 'Liver',
+                value: 'Liver',
+              },
+              {
+                label: 'Musculoskeleta',
+                value: 'Musculoskeleta',
+              },
+              {
+                label: 'Occipital Mass',
+                value: 'Occipital Mass',
+              },
+              {
+                label: 'Brain',
+                value: 'Brain',
+              },
+              {
+                label: 'BxType',
+                value: 'BxType',
+              },
+            ],
+          };
+          break;
+        case 'GWASApp':
+          analysisApps.GWASApp = {
+            title: 'GWAS',
+            description: 'GWAS App',
+            image: '/src/img/analysis-icons/gwas.svg',
+          };
+          break;
+        case 'GWASUIApp':
+          analysisApps.GWASUIApp = {
+            title: 'GWAS UI',
+            description: 'Advanced GWAS UI',
+            image: '/src/img/analysis-icons/gwas.svg',
+          };
+          break;
+        default:
+          break;
         }
       } else if (at.title) {
         analysisApps[at.title] = at;
@@ -456,11 +415,8 @@ function buildConfig(opts) {
     mobile: 480,
   };
 
-  const mdsURL = `${hostname}mds/metadata`;
   const aggMDSURL = `${hostname}mds/aggregate`;
   const aggMDSDataURL = `${aggMDSURL}/metadata`;
-  const cedarWrapperURL = `${hostname}cedar`;
-  const kayakoWrapperURL = `${hostname}kayako`;
 
   // Disallow gitops.json configurability of Gen3 Data Commons and CTDS logo alt text.
   // This allows for one point-of-change in the case of future rebranding.
@@ -477,10 +433,8 @@ function buildConfig(opts) {
     basename,
     breakpoints,
     buildConfig,
-    gwasTemplate,
     dev,
     hostname,
-    hostnameWithSubdomain,
     gaDebug,
     userAPIPath,
     jobAPIPath,
@@ -490,7 +444,6 @@ function buildConfig(opts) {
     coreMetadataPath,
     indexdPath,
     cohortMiddlewarePath,
-    gwasWorkflowPath,
     graphqlPath,
     dataDictionaryTemplatePath,
     graphqlSchemaUrl,
@@ -509,11 +462,8 @@ function buildConfig(opts) {
     workspaceOptionsUrl,
     workspaceStatusUrl,
     workspacePayModelUrl,
-    workspaceSetPayModelUrl,
-    workspaceAllPayModelsUrl,
     workspaceLaunchUrl,
     workspaceTerminateUrl,
-    stridesPortalURL,
     homepageChartNodes: components.index.homepageChartNodes,
     homepageChartNodesChunkSize,
     customHomepageChartConfig: components.index.customHomepageChartConfig,
@@ -526,7 +476,6 @@ function buildConfig(opts) {
     guppyDownloadUrl,
     manifestServiceApiPath,
     wtsPath,
-    wtsAggregateAuthzPath,
     externalLoginOptionsUrl,
     showArboristAuthzOnProfile,
     showFenceAuthzOnProfile,
@@ -553,30 +502,23 @@ function buildConfig(opts) {
     studyViewerConfig,
     covid19DashboardConfig,
     discoveryConfig,
-    kayakoConfig,
-    studyRegistrationConfig,
     mapboxAPIToken,
     auspiceUrl,
     auspiceUrlIL,
     workspacePageTitle,
     workspacePageDescription,
     enableDAPTracker,
-    workspaceRegistrationConfig,
     workspaceStorageUrl,
     workspaceStorageListUrl,
     workspaceStorageDownloadUrl,
     marinerUrl,
-    mdsURL,
     aggMDSDataURL,
-    cedarWrapperURL,
-    kayakoWrapperURL,
     commonsWideAltText,
     ddApplicationId,
     ddClientToken,
     ddEnv,
     ddSampleRate,
     showSystemUse,
-    Error403Url,
   };
 }
 

@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import pluralize from 'pluralize';
-import ReactTable from 'react-table';
+import ReactTable from 'react-table-6';
 import { Switch } from 'antd';
-import 'react-table/react-table.css';
+import 'react-table-6/react-table.css';
 import IconicLink from '../../components/buttons/IconicLink';
 import { GuppyConfigType, TableConfigType } from '../configTypeDef';
 import { hostname } from '../../localconf';
@@ -336,7 +336,7 @@ class ExplorerTable extends React.Component {
     const totalCountDisplay = totalCount.toLocaleString();
     const { pageSize } = this.state;
     const totalPages = Math.floor(totalCount / pageSize) + ((totalCount % pageSize === 0) ? 0 : 1);
-    const SCROLL_SIZE = 10000;
+    const SCROLL_SIZE = 100000;
     const visiblePages = Math.min(totalPages, Math.round((SCROLL_SIZE / pageSize) + 0.49));
     const start = (this.state.currentPage * this.state.pageSize) + 1;
     const end = (this.state.currentPage + 1) * this.state.pageSize;
@@ -364,11 +364,11 @@ class ExplorerTable extends React.Component {
               </label>
             </div>
           )}
-
+        
         <ReactTable
           columns={rootColumnsConfig}
           manual
-          data={(this.props.isLocked || !this.props.rawData) ? [] : this.props.rawData}
+          data={(this.props.isLocked || !this.props.rawData) ? [] : this.props.rawData.slice(0, pageSize)}
           showPageSizeOptions={!this.props.isLocked}
           pages={(this.props.isLocked) ? 0 : visiblePages} // Total number of pages, don't show 10000+ records in table
           loading={this.state.loading}

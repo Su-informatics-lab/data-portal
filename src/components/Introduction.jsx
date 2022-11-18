@@ -9,9 +9,7 @@ import { userHasCreateOrUpdateOnAnyProject } from '../authMappingUtils';
 class Introduction extends Component {
   render() {
     let buttonText = 'Submit Data';
-    if (this.props.data.buttonText) {
-      ({ buttonText } = this.props.data);
-    } else if (useArboristUI) {
+    if (useArboristUI) {
       if (userHasCreateOrUpdateOnAnyProject(this.props.userAuthMapping)) {
         buttonText = 'Submit/Browse Data';
       } else {

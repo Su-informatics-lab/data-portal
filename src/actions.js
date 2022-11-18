@@ -4,20 +4,16 @@ import {
   userAPIPath,
   headers,
   hostname,
-  hostnameWithSubdomain,
-  basename,
   submissionApiPath,
   graphqlPath,
   guppyGraphQLUrl,
   graphqlSchemaUrl,
   authzPath,
   authzMappingPath,
-  wtsAggregateAuthzPath,
 } from './configs';
 import { config } from './params';
 import { showSystemUse } from './localconf';
 import sessionMonitor from './SessionMonitor';
-import isEnabled from './helpers/featureFlags';
 
 export const updatePopup = (state) => ({
   type: 'UPDATE_POPUP',
@@ -25,8 +21,7 @@ export const updatePopup = (state) => ({
 });
 
 export const connectionError = () => {
-  // eslint-disable-next-line no-console
-  console.error('connection error');
+  console.log('connection error');
   return {
     type: 'REQUEST_ERROR',
     error: 'connection_error',
@@ -292,8 +287,7 @@ export const fetchUser = (dispatch) => fetchCreds({
 export const refreshUser = () => fetchUser;
 
 export const logoutAPI = (displayAuthPopup = false) => (dispatch) => {
-  const cleanBasename = basename.replace(/^\/+/g, '').replace(/(dev.html$)/, '');
-  fetch(`${userAPIPath}/logout?next=${hostname}${cleanBasename}`)
+  fetch(`${userAPIPath}/logout?next=${hostname}`)
     .then((response) => {
       if (displayAuthPopup) {
         dispatch({
@@ -366,7 +360,9 @@ export const updateSystemUseNotice = (displayUseWarning) => (dispatch) => {
   });
 };
 
-export const displaySystemUseNotice = () => (dispatch, getState) => dispatch(checkIfDisplaySystemUseNotice(getState().popups.systemUseWarnPopup));
+export const displaySystemUseNotice = () => function (dispatch, getState) {
+  return dispatch(checkIfDisplaySystemUseNotice(getState().popups.systemUseWarnPopup));
+};
 
 /*
  * redux-thunk support asynchronous redux actions via 'thunks' -
@@ -501,50 +497,30 @@ export const fetchUserAccess = async (dispatch) => {
   });
 };
 
-const fetchAuthMapping = (authzMappingURL) => fetch(
-  authzMappingURL,
-).then((fetchRes) => {
-  switch (fetchRes.status) {
-  case 200:
-    return fetchRes.json();
-  default:
-    // This is dispatched on app init and on user login.
-    // Could be not logged in -> no username -> 404; this is ok
-    // There may be plans to update Arborist to return anonymous access when username not found
-    return {};
-  }
-});
-
 // asks arborist for the user's auth mapping if Arborist UI enabled
 export const fetchUserAuthMapping = async (dispatch) => {
   if (!config.showArboristAuthzOnProfile && !config.useArboristUI) {
     return;
   }
 
-  let fetchedAuthMapping;
-  let authMapping;
-  let aggregateAuthMappings = {};
-
-  if (isEnabled('discoveryUseAggWTS')) {
-    // Arborist will get the username from the jwt
-    fetchedAuthMapping = await fetchAuthMapping(wtsAggregateAuthzPath);
-  }
-
-  if (fetchedAuthMapping && Object.keys(fetchedAuthMapping).length) {
-    authMapping = fetchedAuthMapping[hostnameWithSubdomain];
-    aggregateAuthMappings = fetchedAuthMapping;
-  } else {
-    fetchedAuthMapping = await fetchAuthMapping(authzMappingPath);
-    authMapping = fetchedAuthMapping;
-    aggregateAuthMappings[hostnameWithSubdomain] = fetchedAuthMapping;
-  }
+  // Arborist will get the username from the jwt
+  const authMapping = await fetch(
+    `${authzMappingPath}`,
+  )
+    .then((fetchRes) => {
+      switch (fetchRes.status) {
+      case 200:
+        return fetchRes.json();
+      default:
+        // This is dispatched on app init and on user login.
+        // Could be not logged in -> no username -> 404; this is ok
+        // There may be plans to update Arborist to return anonymous access when username not found
+        return {};
+      }
+    });
 
   dispatch({
     type: 'RECEIVE_USER_AUTH_MAPPING',
     data: authMapping,
-  });
-  dispatch({
-    type: 'RECEIVE_AGGREGATE_USER_AUTH_MAPPINGS',
-    data: aggregateAuthMappings,
   });
 };

@@ -107,6 +107,7 @@ class GuppyDataExplorer extends React.Component {
       this.refreshQueryStateInUrl();
     }
     return (
+      // console.log(this.props),
       <div className='guppy-data-explorer'>
         <GuppyWrapper
           adminAppliedPreFilters={this.props.adminAppliedPreFilters}

@@ -17,7 +17,7 @@ const helperSingleton = {
    * Fetch the initial list of projects and global node counts
    */
   homepageQuery: graphql`query gqlHelperHomepageQuery {
-    projectList: project(first: 10000) {
+    projectList: project(first: 100000) {
       name: project_id
       code
     }

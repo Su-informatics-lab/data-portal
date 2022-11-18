@@ -51,12 +51,6 @@ export interface DiscoveryConfig {
             //     }
             // }
         },
-        tagsColumn?: {
-            enabled: boolean,
-        },
-        tagsInDescription?: {
-            enabled: boolean,
-        },
         advSearchFilters?: {
             enabled: boolean,
             field: string,
@@ -109,7 +103,7 @@ export interface DiscoveryConfig {
             // showBackground?: boolean // defaults to `true`
             includeName?: boolean,
             fields: StudyPageFieldConfig[]
-        }[],
+        }[]
         // descriptionField: {
         //     name: string
         //     field: string
@@ -117,22 +111,6 @@ export interface DiscoveryConfig {
         //     valueIfNotAvailable?: string[] // defaults to 'n/a'
         // }
     },
-    detailView: {
-        headerField: string
-        tabs: {
-            tabName: string
-            groups: {
-                header: string
-                fields: {
-                    type: 'block' | 'text' | 'link' | 'textList' | 'linkList' | 'accessDescriptor' | 'tags'
-                    sourceField?: string
-                    label: string
-                    // optionally refine tags by categories
-                    categories?: string[]
-                }[]
-            }[]
-        } []
-    }
     minimalFieldMapping: {
         tagsListFieldName: string,
         authzField: string,
@@ -147,7 +125,6 @@ export interface DiscoveryConfig {
         displayName?: string
     }[],
     tagsDisplayName?: string
-    tableScrollHeight?: number
 }
 export interface StudyPageFieldConfig {
     name: string

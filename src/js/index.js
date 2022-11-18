@@ -5,3 +5,6 @@ $(document).ready(() => {
     $('#arn-form').toggle();
   });
 });
+// if (module.hot) {
+//   module.hot.accept();
+// }

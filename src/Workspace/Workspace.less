@@ -60,19 +60,6 @@ div.workspace--fullpage {
   margin: 20px 0 10px 0;
 }
 
-.workspace__pay-model-selector {
-  display: flex;
-  align-items: baseline;
-}
-
-.workspace__pay-model-selector-icon {
-  padding-left: 8px;
-}
-
-.workspace__pay-model-selector-icon__error {
-  color: var(--g3-color__rose);
-}
-
 .workspace__options {
   padding: 0 20px 20px 20px;
   display: flex;
@@ -80,12 +67,14 @@ div.workspace--fullpage {
 }
 
 .error-workspace-placeholder__error-msg {
-  background: var(--g3-color__bg-cloud);
-  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  padding-top: 40px;
-  min-height: calc(100vh - 242px);
+  background: var(--g3-color__bg-cloud);
+  z-index: 1;
+  text-align: center;
 }
 
 .workspace__spinner-container {

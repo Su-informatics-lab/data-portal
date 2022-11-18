@@ -10,6 +10,12 @@ import DataSummaryCardGroup from '../../components/cards/DataSummaryCardGroup';
 import ExplorerHeatMap from '../ExplorerHeatMap';
 import ExplorerTable from '../ExplorerTable';
 import ReduxExplorerButtonGroup from '../ExplorerButtonGroup/ReduxExplorerButtonGroup';
+import SummaryBoxplotChart from './SummaryBoxPlotChart';
+import StackedLineChart from './StackedLineChart';
+// import RadarChart from './RadarChart';
+import { MyResponsiveSankey } from './SankeyDiagram'
+import { MolecularTestTab } from './MolecularTestTab'
+
 import {
   TableConfigType,
   ButtonConfigType,
@@ -84,7 +90,7 @@ class ExplorerVisualization extends React.Component {
     try {
       const res = await this.props.downloadRawDataByFields({ fields: [caseField] });
       caseIDList = res.map((e) => e[caseField]);
-      this.heatMapIsLocked = false;
+      this.heatMapIsRadarChartocked = false;
     } catch (e) {
       // when tiered access is enabled, we cannot get the list of IDs because
       // the user does not have access to all projects. In that case, the
@@ -159,7 +165,7 @@ class ExplorerVisualization extends React.Component {
         }
         {
           chartData.summaries.length > 0 && (
-            <div className='guppy-explorer-visualization__charts'>
+            <div className='guppy-explorer-visualization__charts' style={{height:'auto', minHeight:400}}>
               <SummaryChartGroup
                 summaries={chartData.summaries}
                 lockMessage={lockMessage}
@@ -167,7 +173,135 @@ class ExplorerVisualization extends React.Component {
                 useCustomizedColorMap={!!components.categorical9Colors}
                 customizedColorMap={components.categorical9Colors || []}
               />
+              {this.props.guppyConfig.type == "follow_up" &&
+                <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
+                  <SummaryBoxplotChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="bmi"
+                        title='BMI Clinical Trial'
+                        category="case_arm"
+                    />
+                  <StackedLineChart
+                      casecount={chartData.countItems[0].value}
+                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                      attribute="bmi"
+                      title="BMI Clinical Trial"
+                      category="case_arm"
+                  />
+                  <SummaryBoxplotChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="bmi"
+                        category="case_group"
+                        title="BMI Observational Study"
+                    />
+                  <StackedLineChart
+                      casecount={chartData.countItems[0].value}
+                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                      attribute="bmi"
+                      title="BMI Observational Study"
+                      category="case_group"
+                  />
+                  <SummaryBoxplotChart
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="meld_score"
+                    category="case_arm"
+                    title="MELD Score Clinical Trial"
+                  />
+                  <StackedLineChart
+                      casecount={chartData.countItems[0].value}
+                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData} 
+                      attribute="meld_score" 
+                      category="case_arm"
+                      title="MELD Score Clinical Trial"
+                 />
+                 <SummaryBoxplotChart
+                        casecount={chartData.countItems[0].value}
+                        title={"MELD Score Observation Study"}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="meld_score"
+                        category="case_group"
+                    />
+                    <StackedLineChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                        attribute="meld_score"
+                        category="case_group"
+                        title="MELD Score Observation Study"
+                    />
+                  <SummaryBoxplotChart
+                      casecount={chartData.countItems[0].value}
+                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                      attribute="child_pugh_score"
+                      category="case_arm"
+                      title="Child-Pugh Score Clinical Trial"
+                  />
+                  <StackedLineChart
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                    attribute="child_pugh_score"
+                    category="case_arm"
+                    title="Child-Pugh Score Clinical Trial"
+                  />
+                  <SummaryBoxplotChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="child_pugh_score"
+                        title="Child-Pugh Score Observational Study"
+                        category="case_group"
+                    />
+                  <StackedLineChart
+                          casecount={chartData.countItems[0].value}
+                          fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                          attribute="child_pugh_score"
+                          category="case_group"
+                          title="Child-Pugh Score Observational Study"
+                  />
+
+                  <SummaryBoxplotChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="maddreys_score"
+                        category="case_arm"
+                        title="Maddrey's Discriminant Function Score Clinical Trial"
+                  />
+                    <StackedLineChart
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData} 
+                        attribute="maddreys_score" 
+                        category='case_arm'
+                        title="Maddrey's Discriminant Function Score Clinical Trial"
+                    />
+                    <SummaryBoxplotChart
+                        title={'Lille Score Clinical Trial'}
+                        casecount={chartData.countItems[0].value}
+                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                        attribute="lille_score"
+                        category="case_arm"
+                    />
+                </div>
+              }
+              {/* {
+                this.props.guppyConfig.type == "aliquot" &&
+                <div style={{height: 500}}>
+                  <div className='exploration_chart__title-box'>
+                    <p className='exploration-chart__title'>Aliquo Flow</p>
+                  </div>
+                  <MyResponsiveSankey />
+                </div>
+              } */}
+              {this.props.guppyConfig.type == "molecular_test" &&
+                <div> 
+                    <MolecularTestTab
+                      casecount={chartData.countItems[0].value}
+                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    />
+                  </div>
+                }
             </div>
+            
           )
         }
         {

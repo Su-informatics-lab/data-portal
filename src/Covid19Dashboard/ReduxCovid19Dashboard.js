@@ -8,7 +8,9 @@ async function handleDashboardData(propName, data) {
   switch (propName) {
   case 'modeledFipsList':
     return readQuotedList(data);
-  case 'jhuJsonByDateLatest':
+  case 'jhuGeojsonLatest':
+  case 'jhuJsonByLevelLatest':
+  case 'jhuJsonByTimeLatest':
   case 'vaccinesByCountyByDate':
     return JSON.parse(data);
   case 'top10ChartData':
