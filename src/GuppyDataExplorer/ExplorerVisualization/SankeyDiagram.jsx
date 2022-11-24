@@ -4,11 +4,11 @@ import { ResponsiveSankey } from '@nivo/sankey'
 const data = {
     "nodes": [
       {
-        "id": "John",
+        "id": "Biospecimens",
         "nodeColor": "hsl(234, 70%, 50%)"
       },
       {
-        "id": "Raoul",
+        "id": "Lab",
         "nodeColor": "hsl(339, 70%, 50%)"
       },
       {
@@ -20,7 +20,7 @@ const data = {
         "nodeColor": "hsl(313, 70%, 50%)"
       },
       {
-        "id": "Ibrahim",
+        "id": "Study",
         "nodeColor": "hsl(318, 70%, 50%)"
       },
       {

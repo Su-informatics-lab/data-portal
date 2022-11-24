@@ -187,9 +187,25 @@
           "chartType": "pie",
           "title": "Ethnicity"
         },
-        "visit_day_set": {
+        "study_site": {
           "chartType": "bar",
+          "title": "Study Site"
+        },
+        "visit_day_set": {
+          "chartType": "fullPie",
           "title": "Visits (day)"
+        },
+        "drinking_frequency": {
+          "chartType":"bar",
+          "title": "Drinking Frequency in the past year"
+        },
+        "drinks_per_day": {
+          "chartType":"bar",
+          "title": "Drinks per Day"
+        },
+        "frequency_of_heavy_drinking": {
+          "chartType":"bar",
+          "title": "Frequency Of Heavy Drinking"
         },
         "aki_status": {
           "chartType": "fullPie",
@@ -235,13 +251,9 @@
           {
             "title": "Behavior",
             "fields":[
-              "laboratory_test"
-            ]
-          },
-          {
-            "title": "Lab Test",
-            "fields":[
-              "laboratory_test"
+              "drinking_frequency",
+              "drinks_per_day",
+              "frequency_of_heavy_drinking"
             ]
           },
           {
@@ -253,6 +265,12 @@
               "days_90_survival",
               "days_180_aki",
               "days_180_survival"
+            ]
+          },
+          {
+            "title": "Lab Test",
+            "fields":[
+              "laboratory_test"
             ]
           }
         ]
@@ -270,6 +288,7 @@
           "actarm",
           "ethnicity",
           "age_at_index",
+          "drinking_frequency",
           "aki_status",
           "days_to_aki",
           "days_90_aki",
@@ -292,6 +311,8 @@
           { "field": "actarm", "name": "Treatment Arm"},
           { "field": "age_at_index", "name": "Age"},
           { "field": "eGFR", "name": "eGFR"},
+          {"field":"observational", "name": "Observational"},
+          {"field": "clinical_trial", "name": "Clinical Trial" },
           { "field": "drinking_frequency", "name": "Drinking frequency in the past year"},
           { "field": "frequency_of_heavy_drinking", "name": "Frequency of heavy drinking"}
         ],
@@ -313,7 +334,7 @@
           "title": "Studys"
         },
         "visit_day": {
-          "chartType": "bar",
+          "chartType": "pie",
           "title": "Visits (day)"
         },
         "case_arm": {
@@ -335,6 +356,10 @@
         "ethnicity": {
           "chartType": "pie",
           "title": "Ethnicity"
+        },
+        "study_site": {
+          "chartType": "bar",
+          "title": "Study Site"
         },
         "aki_status": {
           "chartType": "fullPie",
@@ -388,8 +413,7 @@
           {
             "title": "Participant",
             "fields":[
-              "case_arm",
-              "case_group",
+              "study_site",
               "gender",
               "race",
               "ethnicity"
@@ -432,9 +456,13 @@
         "nodeCountTitle": "Follow_ups",
         "fieldMapping": [
           { "field": "pat_id", "name": "Patient Id"},
+          { "field": "visit_day", "name": "Assessment Date" },
+          { "field": "study_site", "name": "Clinical site"},
           { "field": "case_arm", "name": "Treatment Arm"},
           { "field": "project_id", "name": "Project" },
-          { "field": "visit_day", "name": "Assessment Date" }
+          { "field": "visit_day", "name": "Assessment Date" },
+          {"field":"observational", "name": "Observational"},
+          {"field": "clinical_trial", "name": "Clinical Trial" }
         ],
         "manifestMapping": {
           "resourceIndexType": "file",
@@ -457,6 +485,10 @@
           "chartType": "count",
           "title": "Labs"
         },
+        "lab_name":{
+          "chartType": "bar",
+          "title": "Labs"
+        },
         "specimen_type":{
           "chartType": "bar",
           "title": "Specimen Type"
@@ -476,6 +508,10 @@
         "ethnicity": {
           "chartType": "pie",
           "title": "Ethnicity"
+        },
+        "study_site": {
+          "chartType": "bar",
+          "title": "Study Site"
         },
         "aki_status": {
           "chartType": "fullPie",
@@ -501,18 +537,25 @@
       "filters": {
         "tabs": [
           {
+            "title": "Biospecimen",
+            "fields":[
+              "specimen_type",
+              "lab_name"
+            ]
+          },
+          {
             "title": "Study",
             "fields":[
               "project_id",
               "study_name",
-              "case_group"
+              "case_group",
+              "case_arm"
             ]
           },
           {
             "title":"Participant",
             "fields":[
-              "case_arm",
-              "case_group",
+              "study_site",
               "gender",
               "race",
               "ethnicity"
@@ -522,12 +565,6 @@
             "title":"Follow Up",
             "fields": [
               "visit_day"
-            ]
-          },
-          {
-            "title": "Biospecimen",
-            "fields":[
-              "specimen_type"
             ]
           },
           {
@@ -561,7 +598,12 @@
         "dataType": "aliquot",
         "nodeCountTitle": "Biospecimens",
         "fieldMapping": [
-          { "field": "project_id", "name": "Project" }
+          { "field": "project_id", "name": "Project" },
+          { "field": "pat_id", "name": "Patient Id" },
+          { "field": "visit_day", "name": "Assessment Date" },
+          { "field": "study_site", "name": "Clinical site"},
+          {"field":"observational", "name": "Observational"},
+          {"field": "clinical_trial", "name": "Clinical Trial" }
         ],
         "manifestMapping": {
           "resourceIndexType": "file",
@@ -580,6 +622,10 @@
           "chartType": "count",
           "title": "Projects"
         },
+        "laboratory_test": {
+          "chartType": "bar",
+          "title": "Laboratory Test"
+        },
         "gender": {
           "chartType": "fullPie",
           "title": "Gender"
@@ -588,13 +634,13 @@
           "chartType": "bar",
           "title": "Race"
         },
+        "study_site": {
+          "chartType": "bar",
+          "title": "Study Site"
+        },
         "ethnicity": {
           "chartType": "pie",
           "title": "Ethnicity"
-        },
-        "laboratory_test": {
-          "chartType": "bar",
-          "title": "Laboratory Test"
         },
         "test_result": {
           "chartType": "pie",
@@ -637,7 +683,8 @@
             "fields":[
               "gender",
               "race",
-              "ethnicity"
+              "ethnicity",
+              "study_site"
            ]
           },
           {
@@ -681,7 +728,12 @@
         "dataType": "molecular_test",
         "nodeCountTitle": "Lab Results",
         "fieldMapping": [
-          { "field": "project_id", "name": "Project" }
+          { "field": "project_id", "name": "Project" },
+          { "field": "pat_id", "name": "Patient Id" },
+          { "field": "visit_day", "name": "Assessment Date" },
+          { "field": "study_site", "name": "Clinical site"},
+          {"field":"observational", "name": "Observational"},
+          {"field": "clinical_trial", "name": "Clinical Trial" }
         ],
         "manifestMapping": {
           "resourceIndexType": "file",

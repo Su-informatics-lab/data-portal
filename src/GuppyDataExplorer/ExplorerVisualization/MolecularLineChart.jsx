@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react'; 
+import { isEqual } from 'lodash'; 
 
 import {patVisitEgfrPair, MolecularTestLineData} from './mathworks'
 
@@ -20,7 +21,7 @@ var option = {
   }
 };
 
-class StackedLineChart extends React.Component {
+class MolecularLineChart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,7 +32,7 @@ class StackedLineChart extends React.Component {
   }
   componentDidMount(){
     if(this.props.casecount > 0) {
-      this.fetchData(this.props.casecount)
+      this.fetchData(this.props.data)
     }
   }
   componentWillUnmount() {
@@ -66,24 +67,14 @@ class StackedLineChart extends React.Component {
     // console.log("Stacked", JSON.stringify(this.state.series))
   }
 
-  fetchData(casecount){
-    const size = casecount
-    const offset = 0
-    const sort = []
-    this.props.fetchAndUpdateRawData({
-      offset, size, sort
-    }).then((res) => {
-      if(this.props.tab=='lab_results')
-      this.updateSeries(MolecularTestLineData(res, 'pat_id', this.props.attribute, this.props.category))
-      else
-        this.updateSeries(patVisitEgfrPair(res, 'pat_id', this.props.attribute, this.props.category))
-    });
+  fetchData(data){
+    this.updateSeries(MolecularTestLineData(data, 'pat_id', this.props.attribute, this.props.category))
   };
 
   componentWillReceiveProps(nextProps){
-    if(this.props.casecount !== nextProps.casecount){
-      if(nextProps.casecount>0){
-        this.fetchData(nextProps.casecount)
+    if(!isEqual(this.props.data, nextProps.data)){
+      if(nextProps.data.data.length>0){
+        this.fetchData(nextProps.data)
       }
     }
   }
@@ -119,4 +110,4 @@ class StackedLineChart extends React.Component {
     )
   }
 }
-export default StackedLineChart
+export default MolecularLineChart

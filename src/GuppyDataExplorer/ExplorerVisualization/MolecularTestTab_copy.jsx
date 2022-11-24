@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import MolecularBoxplot from './MolecularBoxplot';
-import MolecularLineChart from './MolecularLineChart';
+import SummaryBoxplotChart from './SummaryBoxPlotChart';
+import StackedLineChart from './StackedLineChart';
 
 export class MolecularTestTab extends React.Component {
     constructor(props) {
@@ -26,6 +26,7 @@ export class MolecularTestTab extends React.Component {
 
     getLabTestType(data){
         const unique = [...new Set(data.map(item => item['laboratory_test']))];
+        console.log(unique) 
         this.setState({
             labTestTypes: unique
         })
@@ -40,7 +41,7 @@ export class MolecularTestTab extends React.Component {
         }).then((res) => {
             this.getLabTestType(res.data)
             this.setState({
-              data: res
+              data: res.data
           })
         });
       };
@@ -54,46 +55,47 @@ export class MolecularTestTab extends React.Component {
 
     render() {
         return (
+          console.log(this.state.data),
         <div>
-            {this.state.data && <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
+            <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
               {this.state.labTestTypes.length>0 && this.state.labTestTypes.map((element, i) => {
                 return (
                 <Fragment key={i}>
-                  <MolecularBoxplot
+                  <SummaryBoxplotChart
                     casecount={this.props.casecount}
                     tab={'lab_results'}
-                    data={this.state.data}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
                     category={'case_arm'}
                     attribute={element}
-                    title={element+" Clinicial Trial"}
+                    title={element+" clinicial"}
                   />
-                  <MolecularLineChart
+                  <StackedLineChart
                     casecount={this.props.casecount}
-                    data={this.state.data}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
                     tab={'lab_results'}
                     category={'case_arm'}
-                    title={element+" Clinicial Trial"}
+                    title={element+" clinicial"}
                     attribute={element}
                   />
-                  <MolecularBoxplot
+                  <SummaryBoxplotChart
                     casecount={this.props.casecount}
                     tab={'lab_results'}
-                    data={this.state.data}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
                     category={'case_group'}
                     attribute={element}
-                    title={element+" Observational Study"}
+                    title={element+" Obs"}
                   />
-                  <MolecularLineChart
+                  <StackedLineChart
                     casecount={this.props.casecount}
-                    data={this.state.data}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
                     tab={'lab_results'}
                     category={'case_group'}
                     attribute={element}
-                    title={element+" Observational Study"}
+                    title={element+" Obs"}
                   />
               </Fragment>)
               })}
-              </div> }
+              </div> 
           </div>
         )
     }

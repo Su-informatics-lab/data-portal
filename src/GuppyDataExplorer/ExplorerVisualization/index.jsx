@@ -283,16 +283,18 @@ class ExplorerVisualization extends React.Component {
                     />
                 </div>
               }
-              {/* {
-                this.props.guppyConfig.type == "aliquot" &&
-                <div style={{height: 500}}>
-                  <div className='exploration_chart__title-box'>
-                    <p className='exploration-chart__title'>Aliquo Flow</p>
-                  </div>
-                  <MyResponsiveSankey />
-                </div>
-              } */}
-              {this.props.guppyConfig.type == "molecular_test" &&
+              {
+                // this.props.guppyConfig.type == "aliquot" &&
+                // <div style={{height: 500}}>
+                //   <div className='exploration_chart__title-box'>
+                //     <p className='exploration-chart__title'>Aliquo Flow</p>
+                //   </div>
+                //   <MyResponsiveSankey />
+                // </div>
+              }
+              { this.props.guppyConfig.type == "molecular_test" 
+              && this.props.totalCount != null && this.props.totalCount <10000 &&
+               chartData.countItems[0].value>0 &&
                 <div> 
                     <MolecularTestTab
                       casecount={chartData.countItems[0].value}

@@ -55,6 +55,9 @@ export const MolecularTestLineData = (data, column, attribute, study_category) =
             return x[0]-y[0];
           });
     })
+    // if(study_category=='case_arm'){
+    //     console.log(arm, res)
+    // }
     return [arm, res]
 }
 
@@ -192,10 +195,13 @@ export const MolecularTestBoxplotData = (data, xcolumn, test_name, category) => 
     case_groups.forEach(element => {
         finalMap.set(element, [])
     })
+    var hasDataFlag = false
 
     var final_data = []
     for (const [key, value] of all_elementdata.entries()) {
-        if(value.length==0) continue;
+        if(value.length == 0) {
+            continue
+        } else hasDataFlag = true
         const visitMap = new Map()
         case_groups.forEach(element => {
             visitMap.set(element, [])
@@ -210,6 +216,7 @@ export const MolecularTestBoxplotData = (data, xcolumn, test_name, category) => 
             )
         })
     }
+    if (!hasDataFlag) return null
     case_groups.forEach(element => {
         final_data.push({
             name: element,
@@ -368,6 +375,10 @@ const q75 = arr => quantile(arr, .75);
 
 export const findMaxMinMed = (data) =>{
     data = data.map(Number)
+    function checkNum(value) {
+        return typeof value === 'number' && !isNaN(value);
+    }
+    data = data.filter(checkNum)
     data = data.sort((a, b) => {
         return a - b
     })

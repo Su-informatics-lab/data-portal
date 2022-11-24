@@ -3420,6 +3420,137 @@
     "program": "*",
     "project": "*",
     "properties": {
+      "adt0101": {
+        "description": "adt0101",
+        "enum": [
+          "2 to 3 times a week",
+          "2 to 4 times a month",
+          "4 or more times a week",
+          "Monthly or less",
+          "Never",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0102": {
+        "description": "adt0102",
+        "enum": [
+          "1 or 2",
+          "3 or 4",
+          "5 or 6",
+          "7 to 9",
+          "10 or more",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0103": {
+        "description": "adt0103",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0104": {
+        "description": "adt0104",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0105": {
+        "description": "adt0105",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0106": {
+        "description": "adt0106",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0107": {
+        "description": "adt0107",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0108": {
+        "description": "adt0108",
+        "enum": [
+          "Never",
+          "Weekly",
+          "Less than monthly",
+          "Daily or almost daily",
+          "Monthly",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0109": {
+        "description": "adt0109",
+        "enum": [
+          "No",
+          "Yes, during the last year",
+          "Yes, but not in the last year",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adt0110": {
+        "description": "adt0110",
+        "enum": [
+          "No",
+          "Yes, during the last year",
+          "Yes, but not in the last year",
+          "Not Done/Missing",
+          "null"
+        ]
+      },
+      "adtcomploth": {
+        "description": "adtcomploth",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "auditnd": {
+        "description": "auditnd",
+        "enum": [
+          "No",
+          "Yes",
+          "null"
+        ]
+      },
       "cases": {
         "anyOf": [
           {

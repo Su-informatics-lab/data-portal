@@ -1,8 +1,9 @@
 
 import React, {Component} from "react"
 import ApexCharts from 'react-apexcharts';
+import { isEqual } from 'lodash'; 
 
-import {CombinedbyGroupVisitDay, MolecularTestBoxplotData} from './mathworks'
+import {MolecularTestBoxplotData} from './mathworks'
 
 var options = {
   chart: {
@@ -19,7 +20,7 @@ var options = {
   yaxis: {
     type: 'value',
     title: {
-      text: 'y_title'
+      text: null
     }
   },
   title: {
@@ -51,7 +52,7 @@ var options = {
   }
 }
 
-class SummaryBoxplotChart extends React.Component {
+class MolecularBoxplot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,26 +78,14 @@ class SummaryBoxplotChart extends React.Component {
       }
     })
     if(this.props.casecount > 0) {
-      this.fetchData(this.props.casecount)
+      this.fetchData(this.props.data)
     }
   }
 
-  fetchData(casecount){
-    const size = casecount
-    const offset = 0
-    const sort = []
-    this.props.fetchAndUpdateRawData({
-      offset, size, sort
-    }).then((res) => {
-      if(this.props.tab=='lab_results'){
-        this.updateSeries(MolecularTestBoxplotData(res,'visit_day', this.props.attribute, this.props.category))
-      } else {
-        this.updateSeries(CombinedbyGroupVisitDay(res,'visit_day', this.props.attribute, this.props.category))
-        // else
-        //   this.updateSeries(CombinedbyVisitDays(res,'visit_day', this.props.attribute, this.props.category))
-      }
-    });
+  fetchData(data){
+    this.updateSeries(MolecularTestBoxplotData(data,'visit_day', this.props.attribute, this.props.category))
   };
+
   ApexCharts = window.ApexCharts;
 
   updateSeries(data){
@@ -104,9 +93,18 @@ class SummaryBoxplotChart extends React.Component {
       this.setState({visible: false})
       return
     } else this.setState({visible: true})
-    this.state.options.yaxis.title.text=this.props.attribute
+    // this.state.options.yaxis.title.text=this.props.attribute
     this.setState({
       series: data,
+      options: {
+        ...this.state.options,
+        yaxis: {
+          type: 'value',
+          title: {
+            text: this.props.attribute
+          }
+        },
+      }
     }, ()=>{
       this.ApexCharts.exec(this.props.attribute, 'updateSeries', 
           data, true)
@@ -116,9 +114,9 @@ class SummaryBoxplotChart extends React.Component {
 
    
   componentWillReceiveProps(nextProps){
-    if(this.props.casecount !== nextProps.casecount){
-      if(nextProps.casecount>0){
-        this.fetchData(nextProps.casecount)
+    if(!isEqual(this.props.data, nextProps.data)){
+      if(nextProps.data.data.length>0){
+        this.fetchData(nextProps.data)
       }
     }
   }
@@ -163,7 +161,7 @@ class SummaryBoxplotChart extends React.Component {
     )
   }
 }
-export default SummaryBoxplotChart
+export default MolecularBoxplot
 
 
 
