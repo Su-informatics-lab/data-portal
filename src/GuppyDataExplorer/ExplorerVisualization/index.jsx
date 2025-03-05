@@ -33,6 +33,7 @@ class ExplorerVisualization extends React.Component {
   }
 
   getData = (aggsData, chartConfig, filter) => {
+    console.log(aggsData, filter)
     const summaries = [];
     let countItems = [];
     const stackedBarCharts = [];

@@ -190,7 +190,7 @@
   },
   "scripts": {
     "fix": "export NODE_OPTIONS=--openssl-legacy-provider",
-    "start": "HOSTNAME=dev.ardac.org NODE_ENV=dev APP=dev bash ./runWebpack.sh",
+    "start": "HOSTNAME=portal.ardac.org NODE_ENV=dev APP=dev bash ./runWebpack.sh",
     "test": "jest",
     "relay": "node ./data/gqlSetup.js > src/gqlHelper.js && ./node_modules/.bin/relay-compiler --verbose --src src --exclude '**/__generated__/**' --exclude '**/node_modules/**' --schema ./data/schema.json --extensions js jsx",
     "schema": "node ./data/getSchema",
