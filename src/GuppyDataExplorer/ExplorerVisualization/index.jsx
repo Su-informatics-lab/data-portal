@@ -176,34 +176,6 @@ class ExplorerVisualization extends React.Component {
               {this.props.guppyConfig.type == "follow_up" &&
                 <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
                   <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        title='BMI Clinical Trial'
-                        category="case_arm"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Clinical Trial"
-                      category="case_arm"
-                  />
-                  <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        category="case_group"
-                        title="BMI Observational Study"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Observational Study"
-                      category="case_group"
-                  />
-                  <SummaryBoxplotChart
                     casecount={chartData.countItems[0].value}
                     fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
                     attribute="meld_score"

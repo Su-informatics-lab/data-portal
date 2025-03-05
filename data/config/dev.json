@@ -177,7 +177,7 @@
         },
         "gender": {
           "chartType": "fullPie",
-          "title": "Gender"
+          "title": "Sex"
         },
         "race": {
           "chartType": "bar",
@@ -188,7 +188,7 @@
           "title": "Ethnicity"
         },
         "study_site": {
-          "chartType": "bar",
+          "chartType": "pie",
           "title": "Study Site"
         },
         "visit_day_set": {
@@ -201,31 +201,32 @@
         },
         "drinks_per_day": {
           "chartType":"bar",
-          "title": "Drinks per Day"
+          "title": "Drinks per Day in the past year"
         },
         "frequency_of_heavy_drinking": {
           "chartType":"bar",
-          "title": "Frequency Of Heavy Drinking"
+          "title": "Frequency Of Heavy Drinking in the past year"
         },
         "aki_status": {
           "chartType": "fullPie",
           "title": "AKI Status"
         },
-        "days_90_aki": {
-          "chartType": "pie",
-          "title": "Days 90 AKI"
-        },
         "days_90_survival": {
           "chartType":"fullPie",
           "title": "Days 90 Survival"
         },
-        "days_180_aki": {
-          "chartType":"pie",
-          "title": "Days 180 AKI"
-        },
         "days_180_survival": {
           "chartType":"fullPie",
           "title": "Days 180 Survival"
+        },
+        "days_90_aki": {
+          "chartType": "pie",
+          "title": "Days 90 AKI"
+        },
+
+        "days_180_aki": {
+          "chartType":"pie",
+          "title": "Days 180 AKI"
         }
       },
       "filters": {
@@ -261,10 +262,10 @@
             "fields":[
               "aki_status",
               "days_to_aki",
-              "days_90_aki",
               "days_90_survival",
-              "days_180_aki",
-              "days_180_survival"
+              "days_180_survival",
+              "days_90_aki",
+              "days_180_aki"
             ]
           },
           {
@@ -311,10 +312,12 @@
           { "field": "actarm", "name": "Treatment Arm"},
           { "field": "age_at_index", "name": "Age"},
           { "field": "eGFR", "name": "eGFR"},
+          { "field": "gender", "name": "sex"},
           {"field":"observational", "name": "Observational"},
           {"field": "clinical_trial", "name": "Clinical Trial" },
           { "field": "drinking_frequency", "name": "Drinking frequency in the past year"},
-          { "field": "frequency_of_heavy_drinking", "name": "Frequency of heavy drinking"}
+          { "field": "drinks_per_day", "name": "Drinks per day in the past year"},
+          { "field": "frequency_of_heavy_drinking", "name": "Frequency of heavy drinking in the past year"}
         ],
         "manifestMapping": {
           "resourceIndexType": "file",
@@ -339,7 +342,7 @@
         },
         "case_arm": {
           "chartType": "bar",
-          "title": "Act Arms"
+          "title": "Treatment Arm"
         },
         "case_group": {
           "chartType": "bar",
@@ -347,7 +350,7 @@
         },
         "gender": {
           "chartType": "fullPie",
-          "title": "Gender"
+          "title": "Sex"
         },
         "race": {
           "chartType": "bar",
@@ -358,28 +361,25 @@
           "title": "Ethnicity"
         },
         "study_site": {
-          "chartType": "bar",
-          "title": "Study Site"
-        },
-        "aki_status": {
           "chartType": "fullPie",
-          "title": "AKI Status"
-        },
-        "days_90_aki": {
-          "chartType": "pie",
-          "title": "Days 90 AKI"
+          "title": "Study Site"
         },
         "days_90_survival": {
           "chartType":"fullPie",
           "title": "Days 90 Survival"
         },
-        "days_180_aki": {
-          "chartType":"pie",
-          "title": "Days 180 AKI"
-        },
         "days_180_survival": {
           "chartType":"fullPie",
           "title": "Days 180 Survival"
+        },
+        "days_90_aki": {
+          "chartType": "pie",
+          "title": "Days 90 AKI"
+        },
+
+        "days_180_aki": {
+          "chartType":"pie",
+          "title": "Days 180 AKI"
         }
       },
       "filters": {
@@ -462,7 +462,8 @@
           { "field": "project_id", "name": "Project" },
           { "field": "visit_day", "name": "Assessment Date" },
           {"field":"observational", "name": "Observational"},
-          {"field": "clinical_trial", "name": "Clinical Trial" }
+          {"field": "clinical_trial", "name": "Clinical Trial" },
+          { "field": "gender", "name": "sex"}
         ],
         "manifestMapping": {
           "resourceIndexType": "file",
@@ -499,7 +500,7 @@
         },
         "gender": {
           "chartType": "fullPie",
-          "title": "Gender"
+          "title": "Sex"
         },
         "race": {
           "chartType": "bar",
@@ -510,28 +511,25 @@
           "title": "Ethnicity"
         },
         "study_site": {
-          "chartType": "bar",
-          "title": "Study Site"
-        },
-        "aki_status": {
           "chartType": "fullPie",
-          "title": "AKI Status"
-        },
-        "days_90_aki": {
-          "chartType": "pie",
-          "title": "Days 90 AKI"
+          "title": "Study Site"
         },
         "days_90_survival": {
           "chartType":"fullPie",
           "title": "Days 90 Survival"
         },
-        "days_180_aki": {
-          "chartType":"pie",
-          "title": "Days 180 AKI"
-        },
         "days_180_survival": {
           "chartType":"fullPie",
           "title": "Days 180 Survival"
+        },
+        "days_90_aki": {
+          "chartType": "pie",
+          "title": "Days 90 AKI"
+        },
+
+        "days_180_aki": {
+          "chartType":"pie",
+          "title": "Days 180 AKI"
         }
       },
       "filters": {
@@ -603,7 +601,8 @@
           { "field": "visit_day", "name": "Assessment Date" },
           { "field": "study_site", "name": "Clinical site"},
           {"field":"observational", "name": "Observational"},
-          {"field": "clinical_trial", "name": "Clinical Trial" }
+          {"field": "clinical_trial", "name": "Clinical Trial" },
+          { "field": "gender", "name": "sex"}
         ],
         "manifestMapping": {
           "resourceIndexType": "file",
@@ -628,14 +627,18 @@
         },
         "gender": {
           "chartType": "fullPie",
-          "title": "Gender"
+          "title": "Sex"
         },
         "race": {
           "chartType": "bar",
           "title": "Race"
         },
+        "lab_name": {
+          "chartType":"bar",
+          "title": "Lab"
+        },
         "study_site": {
-          "chartType": "bar",
+          "chartType": "fullPie",
           "title": "Study Site"
         },
         "ethnicity": {
@@ -646,25 +649,21 @@
           "chartType": "pie",
           "title": "Test Result"
         },
-        "aki_status": {
-          "chartType": "fullPie",
-          "title": "AKI Status"
+        "days_90_survival": {
+          "chartType":"fullPie",
+          "title": "Days 90 Survival"
+        },
+        "days_180_survival": {
+          "chartType":"fullPie",
+          "title": "Days 180 Survival"
         },
         "days_90_aki": {
           "chartType": "pie",
           "title": "Days 90 AKI"
         },
-        "days_90_survival": {
-          "chartType":"fullPie",
-          "title": "Days 90 Survival"
-        },
         "days_180_aki": {
           "chartType":"pie",
           "title": "Days 180 AKI"
-        },
-        "days_180_survival": {
-          "chartType":"fullPie",
-          "title": "Days 180 Survival"
         }
       },
       "filters": {
@@ -676,6 +675,12 @@
               "study_name",
               "case_arm",
               "case_group"
+            ]
+          },
+          {
+            "title":"Lab",
+            "fields": [
+              "lab_name"
             ]
           },
           {
@@ -733,7 +738,8 @@
           { "field": "visit_day", "name": "Assessment Date" },
           { "field": "study_site", "name": "Clinical site"},
           {"field":"observational", "name": "Observational"},
-          {"field": "clinical_trial", "name": "Clinical Trial" }
+          {"field": "clinical_trial", "name": "Clinical Trial" },
+          { "field": "gender", "name": "sex"}
         ],
         "manifestMapping": {
           "resourceIndexType": "file",

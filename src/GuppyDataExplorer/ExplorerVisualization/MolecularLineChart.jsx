@@ -13,12 +13,25 @@ var option = {
   series: [
     {
       type: 'line',
-      symbol:'none'
+      symbol:'none',
+      lineStyle: {
+        normal: {
+          width: 0.1
+        }
+      }
     }
   ],
   legend: {
 
-  }
+  },
+  toolbox: {
+    show : true,
+    feature : {
+        mark : {show: true},
+        restore : {show: true},
+        saveAsImage : {show: true}
+    }
+},
 };
 
 class MolecularLineChart extends React.Component {
@@ -52,7 +65,12 @@ class MolecularLineChart extends React.Component {
         name: data[0][i],
         data: data[1][i],
         type: 'line',
-        symbol: 'none'
+        symbol: 'none',
+        lineStyle: {
+          normal: {
+            width: 1
+          }
+        }
       })
     }
     this.setState({

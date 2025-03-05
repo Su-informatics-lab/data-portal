@@ -23,10 +23,6 @@ var options = {
       text: null
     }
   },
-  title: {
-    text: 'BoxPlot Chart',
-    align: 'left'
-  },
   tooltip: {
     shared: false,
     intersect: true

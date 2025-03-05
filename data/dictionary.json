@@ -3305,7 +3305,9 @@
           "Anakinra",
           "NEAT Plasma",
           "Saliva",
-          "Whole Blood"
+          "Whole Blood (DNA)",
+          "Unknown Code",
+          "Liver Tissue"
         ]
       },
       "state": {
@@ -9230,7 +9232,8 @@
           "90",
           "180",
           "84",
-          "168"
+          "168",
+          "TEST!!!!!"
         ]
       },
       "weight": {
@@ -10964,6 +10967,7 @@
           "Creatinine",
           "Cytokeratin 5",
           "Cytokeratin 6",
+          "Cystatin-C",
           "Direct Bilirubin",
           "Dopamine-Secreting",
           "Eosinophil",
@@ -11022,7 +11026,14 @@
           "Triglycerides",
           "WBC",
           "Unknown",
-          "Not Reported"
+          "Not Reported",
+          "ACE",
+          "Renin",
+          "Urine Creatinine",
+          "Urine IL-18",
+          "Urine KIM-1",
+          "Urine L-FABP",
+          "Urine NGAL"
         ]
       },
       "labs": {

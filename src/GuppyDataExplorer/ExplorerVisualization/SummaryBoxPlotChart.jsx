@@ -22,10 +22,6 @@ var options = {
       text: 'y_title'
     }
   },
-  title: {
-    text: 'BoxPlot Chart',
-    align: 'left'
-  },
   tooltip: {
     shared: false,
     intersect: true
