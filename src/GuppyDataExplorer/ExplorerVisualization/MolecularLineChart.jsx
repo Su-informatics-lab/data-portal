@@ -1,24 +1,37 @@
 import React from 'react';
-import ReactECharts from 'echarts-for-react'; 
-import { isEqual } from 'lodash'; 
+import ReactECharts from 'echarts-for-react';
+import { isEqual } from 'lodash';
 
-import {patVisitEgfrPair, MolecularTestLineData} from './mathworks'
+import { patVisitEgfrPair, MolecularTestLineData } from './mathworks'
 
 var option = {
   xAxis: {
-    name:'Visit_day',
+    name: 'Visit_day',
   },
   yAxis: {
   },
   series: [
     {
       type: 'line',
-      symbol:'none'
+      symbol: 'none',
+      lineStyle: {
+        normal: {
+          width: 0.1
+        }
+      }
     }
   ],
   legend: {
 
-  }
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      mark: { show: true },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
 };
 
 class MolecularLineChart extends React.Component {
@@ -30,59 +43,66 @@ class MolecularLineChart extends React.Component {
       visible: true
     };
   }
-  componentDidMount(){
-    if(this.props.casecount > 0) {
+  componentDidMount() {
+    if (this.props.casecount > 0) {
       this.fetchData(this.props.data)
     }
   }
   componentWillUnmount() {
     // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (state,callback)=>{
-        return;
+    this.setState = (state, callback) => {
+      return;
     };
   }
 
-  updateSeries(data){
-    if(data[0].length==0) {
-      this.setState({visible: false})
-    } else this.setState({visible: true})
+  updateSeries(data) {
+    if (data[0].length == 0) {
+      this.setState({ visible: false })
+    } else this.setState({ visible: true })
     const newSeries = []
-    for (var i = 0; i < data[1].length; i++){
+    for (var i = 0; i < data[1].length; i++) {
       newSeries.push({
         name: data[0][i],
         data: data[1][i],
         type: 'line',
-        symbol: 'none'
+        symbol: 'none',
+        lineStyle: {
+          normal: {
+            width: 1
+          }
+        }
       })
     }
     this.setState({
-      series:newSeries
-    }, ()=>{
+      series: newSeries
+    }, () => {
       this.state.option = {
         ...this.state.option,
-        series : this.state.series,
-        yAxis: {name: this.props.attribute}
+        series: this.state.series,
+        yAxis: {
+          name: this.props.unit ? `${this.props.attribute} (${this.props.unit})` : this.props.attribute
+        }
       }
     });
     // console.log("Stacked", JSON.stringify(this.state.series))
   }
 
-  fetchData(data){
+  fetchData(data) {
     this.updateSeries(MolecularTestLineData(data, 'pat_id', this.props.attribute, this.props.category))
   };
 
-  componentWillReceiveProps(nextProps){
-    if(!isEqual(this.props.data, nextProps.data)){
-      if(nextProps.data.data.length>0){
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.data, nextProps.data)) {
+      if (nextProps.data.data.length > 0) {
         this.fetchData(nextProps.data)
       }
     }
   }
 
-  getOption(){
+  getOption() {
     option = {
       ...this.state.option,
-      series : this.state.series
+      series: this.state.series
     }
     return option
   }
@@ -90,23 +110,23 @@ class MolecularLineChart extends React.Component {
   render() {
     return (
       <>
-      {this.state.visible && <div className="summary-chart-group__column">
-        <div className='summary-chart-group__column-left-border'></div>
-        <div className='summary-horizontal-bar-chart'>
-          <div className='exploration_chart__title-box'>
-            <p className='exploration-chart__title'>{this.props.title}</p>
-          </div>
+        {this.state.visible && <div className="summary-chart-group__column">
+          <div className='summary-chart-group__column-left-border'></div>
+          <div className='summary-horizontal-bar-chart'>
+            <div className='exploration_chart__title-box'>
+              <p className='exploration-chart__title'>{this.props.title}</p>
+            </div>
             {/* {JSON.stringify(this.getOption())} */}
             <ReactECharts
-                style={{width: 400, height: 300}}
-                option={this.getOption()}
-                notMerge={true}
-                lazyUpdate={true}
-                theme={"theme_name"}
-              />
+              style={{ width: 400, height: 300 }}
+              option={this.getOption()}
+              notMerge={true}
+              lazyUpdate={true}
+              theme={"theme_name"}
+            />
           </div>
-      </div>}
-    </>
+        </div>}
+      </>
     )
   }
 }

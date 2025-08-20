@@ -185,7 +185,7 @@ export const MolecularTestBoxplotData = (data, xcolumn, test_name, category) => 
         const elementdata = []
         for(let i in data){
             if(data[i][xcolumn]==element && data[i]['laboratory_test']==test_name && data[i][category].length>0){
-                elementdata.push([data[i][category][0], data[i]['test_value']])  
+                elementdata.push([data[i][category][0], parseFloat(data[i]['test_value'])])  
             }
         }
         all_elementdata.set(element, elementdata)

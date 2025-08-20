@@ -1,19 +1,19 @@
 
-import React, {Component} from "react"
+import React, { Component } from "react"
 import ApexCharts from 'react-apexcharts';
-import { isEqual } from 'lodash'; 
+import { isEqual } from 'lodash';
 
-import {MolecularTestBoxplotData} from './mathworks'
+import { MolecularTestBoxplotData } from './mathworks'
 
 var options = {
   chart: {
     type: 'boxPlot',
     height: 300,
   },
-  xaxis:{
+  xaxis: {
     type: 'numeric',
-    title:{
-      text:"Visit Days"
+    title: {
+      text: "Visit Days"
     }
 
   },
@@ -23,18 +23,14 @@ var options = {
       text: null
     }
   },
-  title: {
-    text: 'BoxPlot Chart',
-    align: 'left'
-  },
   tooltip: {
     shared: false,
     intersect: true
   },
   plotOptions: {
     boxPlot: {
-      colors: 
-        [ 
+      colors:
+        [
           {
             upper: '#E91E63',
             lower: '#A5978B'
@@ -62,38 +58,38 @@ class MolecularBoxplot extends React.Component {
       data: [],
       ref: this.props.attribute,
       options: options,
-      visible:true
+      visible: true
     };
   }
-  componentDidMount(){
+  componentDidMount() {
     this.setState({
       options: {
         ...this.state.options,
         yaxis: {
           type: 'value',
           title: {
-            text: this.props.attribute
+            text: this.props.unit ? `${this.props.attribute} (${this.props.unit})` : this.props.attribute
           }
         },
       }
     })
-    if(this.props.casecount > 0) {
+    if (this.props.casecount > 0) {
       this.fetchData(this.props.data)
     }
   }
 
-  fetchData(data){
-    this.updateSeries(MolecularTestBoxplotData(data,'visit_day', this.props.attribute, this.props.category))
+  fetchData(data) {
+    this.updateSeries(MolecularTestBoxplotData(data, 'visit_day', this.props.attribute, this.props.category))
   };
 
   ApexCharts = window.ApexCharts;
 
-  updateSeries(data){
-    if(data==null) {
-      this.setState({visible: false})
+  updateSeries(data) {
+    if (data == null) {
+      this.setState({ visible: false })
       return
-    } else this.setState({visible: true})
-    // this.state.options.yaxis.title.text=this.props.attribute
+    } else this.setState({ visible: true })
+
     this.setState({
       series: data,
       options: {
@@ -101,62 +97,67 @@ class MolecularBoxplot extends React.Component {
         yaxis: {
           type: 'value',
           title: {
-            text: this.props.attribute
+            text: this.props.unit ? `${this.props.attribute} (${this.props.unit})` : this.props.attribute
+          },
+          labels: {
+            formatter: function (value) {
+              return parseFloat(value.toFixed(2));
+            }
           }
         },
       }
-    }, ()=>{
-      this.ApexCharts.exec(this.props.attribute, 'updateSeries', 
-          data, true)
+    }, () => {
+      this.ApexCharts.exec(this.props.attribute, 'updateSeries',
+        data, true)
       window.dispatchEvent(new Event('resize'))
     });
   }
 
-   
-  componentWillReceiveProps(nextProps){
-    if(!isEqual(this.props.data, nextProps.data)){
-      if(nextProps.data.data.length>0){
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.data, nextProps.data)) {
+      if (nextProps.data.data.length > 0) {
         this.fetchData(nextProps.data)
       }
     }
   }
 
-  componentWillUpdate (nextProps,nextState) {
-    this.ApexCharts.exec(this.props.attribute, 'updateSeries', 
-        nextState.series, true)
+  componentWillUpdate(nextProps, nextState) {
+    this.ApexCharts.exec(this.props.attribute, 'updateSeries',
+      nextState.series, true)
   }
 
   componentWillUnmount() {
     // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (state,callback)=>{
-        return;
+    this.setState = (state, callback) => {
+      return;
     };
   }
 
   chartRef(ref) {
     if (ref) {
-      this.setState({ref:ref})
+      this.setState({ ref: ref })
     }
   }
 
   render() {
     return (
       <>
-      {this.state.visible &&
-        <div className="summary-chart-group__column summary-horizontal-bar-chart" style={{minWidth: 650}}>
-          <div className='exploration_chart__title-box'>
-            <p className='exploration-chart__title'>{this.props.title}</p>
-          </div> 
-          <div id="chart">
-                <ApexCharts 
-                  ref={this.props.attribute}
-                  id={this.props.attribute}
-                  options={this.state.options} 
-                  series={this.state.series} 
-                  type="boxPlot" height={300} width={600} />
+        {this.state.visible &&
+          <div className="summary-chart-group__column summary-horizontal-bar-chart" style={{ minWidth: 650 }}>
+            <div className='exploration_chart__title-box'>
+              <p className='exploration-chart__title'>{this.props.title}</p>
             </div>
-        </div>
-      }
+            <div id="chart">
+              <ApexCharts
+                ref={this.props.attribute}
+                id={this.props.attribute}
+                options={this.state.options}
+                series={this.state.series}
+                type="boxPlot" height={300} width={600} />
+            </div>
+          </div>
+        }
       </>
     )
   }

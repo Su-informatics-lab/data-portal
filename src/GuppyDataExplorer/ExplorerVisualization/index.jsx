@@ -5,7 +5,7 @@ import ConnectedFilter from '@gen3/guppy/dist/components/ConnectedFilter';
 import SummaryChartGroup from '@gen3/ui-component/dist/components/charts/SummaryChartGroup';
 import PercentageStackedBarChart from '@gen3/ui-component/dist/components/charts/PercentageStackedBarChart';
 import { components } from '../../params';
-import { guppyUrl, tierAccessLevel, tierAccessLimit } from '../../localconf';
+import { guppyUrl, tierAccessLevel, tierAccessLimit, explorerFilterValuesToHide } from '../../localconf';
 import DataSummaryCardGroup from '../../components/cards/DataSummaryCardGroup';
 import ExplorerHeatMap from '../ExplorerHeatMap';
 import ExplorerTable from '../ExplorerTable';
@@ -13,9 +13,9 @@ import ReduxExplorerButtonGroup from '../ExplorerButtonGroup/ReduxExplorerButton
 import SummaryBoxplotChart from './SummaryBoxPlotChart';
 import StackedLineChart from './StackedLineChart';
 // import RadarChart from './RadarChart';
-import { MyResponsiveSankey } from './SankeyDiagram'
-import { MolecularTestTab } from './MolecularTestTab'
-
+import { MyResponsiveSankey } from './SankeyDiagram';
+import { MolecularTestTab } from './MolecularTestTab';
+import ARDaCSurvivalCurve from './ARDaCSurvivalCurve';
 import {
   TableConfigType,
   ButtonConfigType,
@@ -44,32 +44,38 @@ class ExplorerVisualization extends React.Component {
       // use `${field}` to handle nested fields, which contain '.'
       if (!aggsData || !aggsData[`${field}`] || !aggsData[`${field}`].histogram) return;
       const { histogram } = aggsData[`${field}`];
+
+      // use explorerFilterValuesToHide to filter data
+      const filteredHistogram = histogram.filter(item =>
+        !explorerFilterValuesToHide.includes(item.key)
+      );
+
       switch (chartConfig[`${field}`].chartType) {
-      case 'count':
-        countItems.push({
-          label: chartConfig[`${field}`].title,
-          value: filter[`${field}`] ? filter[`${field}`].selectedValues.length
-            : aggsData[`${field}`].histogram.length,
-        });
-        break;
-      case 'pie':
-      case 'fullPie':
-      case 'bar':
-      case 'stackedBar': {
-        const dataItem = {
-          type: chartConfig[`${field}`].chartType,
-          title: chartConfig[`${field}`].title,
-          data: histogram.map((i) => ({ name: i.key, value: i.count })),
-        };
-        if (chartConfig[`${field}`].chartType === 'stackedBar') {
-          stackedBarCharts.push(dataItem);
-        } else {
-          summaries.push(dataItem);
+        case 'count':
+          countItems.push({
+            label: chartConfig[`${field}`].title,
+            value: filter[`${field}`] ? filter[`${field}`].selectedValues.length
+              : filteredHistogram.length,
+          });
+          break;
+        case 'pie':
+        case 'fullPie':
+        case 'bar':
+        case 'stackedBar': {
+          const dataItem = {
+            type: chartConfig[`${field}`].chartType,
+            title: chartConfig[`${field}`].title,
+            data: filteredHistogram.map((i) => ({ name: i.key, value: i.count })),
+          };
+          if (chartConfig[`${field}`].chartType === 'stackedBar') {
+            stackedBarCharts.push(dataItem);
+          } else {
+            summaries.push(dataItem);
+          }
+          break;
         }
-        break;
-      }
-      default:
-        throw new Error(`Invalid chartType ${chartConfig[`${field}`].chartType}`);
+        default:
+          throw new Error(`Invalid chartType ${chartConfig[`${field}`].chartType}`);
       }
     });
     // sort cout items according to appearance in chart config
@@ -111,11 +117,10 @@ class ExplorerVisualization extends React.Component {
     // don't lock components for libre commons
     const isComponentLocked = (tierAccessLevel !== 'regular') ? false : checkForAnySelectedUnaccessibleField(this.props.aggsData,
       this.props.accessibleFieldObject, this.props.guppyConfig.accessibleValidationField);
-    const lockMessage = `The chart is hidden because you are exploring restricted access data and one or more of the values within the chart has a count below the access limit of ${this.props.tierAccessLimit} ${
-      this.props.guppyConfig.nodeCountTitle
+    const lockMessage = `The chart is hidden because you are exploring restricted access data and one or more of the values within the chart has a count below the access limit of ${this.props.tierAccessLimit} ${this.props.guppyConfig.nodeCountTitle
         ? this.props.guppyConfig.nodeCountTitle.toLowerCase()
         : labelToPlural(this.props.guppyConfig.dataType)
-    }.`;
+      }.`;
     const barChartColor = components.categorical2Colors ? components.categorical2Colors[0] : null;
 
     // heatmap config
@@ -165,7 +170,7 @@ class ExplorerVisualization extends React.Component {
         }
         {
           chartData.summaries.length > 0 && (
-            <div className='guppy-explorer-visualization__charts' style={{height:'auto', minHeight:400}}>
+            <div className='guppy-explorer-visualization__charts' style={{ height: 'auto', minHeight: 400 }}>
               <SummaryChartGroup
                 summaries={chartData.summaries}
                 lockMessage={lockMessage}
@@ -173,36 +178,20 @@ class ExplorerVisualization extends React.Component {
                 useCustomizedColorMap={!!components.categorical9Colors}
                 customizedColorMap={components.categorical9Colors || []}
               />
+
+              {this.props.guppyConfig.type == "case" &&
+                <div>
+                  <ARDaCSurvivalCurve
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    casecount={chartData.countItems[0].value}
+                    guppyConfig={this.props.guppyConfig}
+                    filter={this.props.filter}
+                  />
+                </div>
+              }
+
               {this.props.guppyConfig.type == "follow_up" &&
-                <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
-                  <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        title='BMI Clinical Trial'
-                        category="case_arm"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Clinical Trial"
-                      category="case_arm"
-                  />
-                  <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        category="case_group"
-                        title="BMI Observational Study"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Observational Study"
-                      category="case_group"
-                  />
+                <div className="summary-chart-group" style={{ height: 'fit-content', minHeight: 400 }}>
                   <SummaryBoxplotChart
                     casecount={chartData.countItems[0].value}
                     fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
@@ -211,99 +200,91 @@ class ExplorerVisualization extends React.Component {
                     title="MELD Score Clinical Trial"
                   />
                   <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData} 
-                      attribute="meld_score" 
-                      category="case_arm"
-                      title="MELD Score Clinical Trial"
-                 />
-                 <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        title={"MELD Score Observation Study"}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="meld_score"
-                        category="case_group"
-                    />
-                    <StackedLineChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                        attribute="meld_score"
-                        category="case_group"
-                        title="MELD Score Observation Study"
-                    />
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="meld_score"
+                    category="case_arm"
+                    title="MELD Score Clinical Trial"
+                  />
                   <SummaryBoxplotChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                      attribute="child_pugh_score"
-                      category="case_arm"
-                      title="Child-Pugh Score Clinical Trial"
+                    casecount={chartData.countItems[0].value}
+                    title={"MELD Score Observation Study"}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="meld_score"
+                    category="case_group"
                   />
                   <StackedLineChart
                     casecount={chartData.countItems[0].value}
-                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="meld_score"
+                    category="case_group"
+                    title="MELD Score Observation Study"
+                  />
+
+                  <SummaryBoxplotChart
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="child_pugh_score"
+                    category="case_arm"
+                    title="Child-Pugh Score Clinical Trial"
+                  />
+                  <StackedLineChart
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
                     attribute="child_pugh_score"
                     category="case_arm"
                     title="Child-Pugh Score Clinical Trial"
                   />
                   <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="child_pugh_score"
-                        title="Child-Pugh Score Observational Study"
-                        category="case_group"
-                    />
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="child_pugh_score"
+                    title="Child-Pugh Score Observational Study"
+                    category="case_group"
+                  />
                   <StackedLineChart
-                          casecount={chartData.countItems[0].value}
-                          fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                          attribute="child_pugh_score"
-                          category="case_group"
-                          title="Child-Pugh Score Observational Study"
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="child_pugh_score"
+                    category="case_group"
+                    title="Child-Pugh Score Observational Study"
                   />
 
                   <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="maddreys_score"
-                        category="case_arm"
-                        title="Maddrey's Discriminant Function Score Clinical Trial"
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="maddreys_score"
+                    category="case_arm"
+                    title="Maddrey's Discriminant Function Score Clinical Trial"
                   />
-                    <StackedLineChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData} 
-                        attribute="maddreys_score" 
-                        category='case_arm'
-                        title="Maddrey's Discriminant Function Score Clinical Trial"
-                    />
-                    <SummaryBoxplotChart
-                        title={'Lille Score Clinical Trial'}
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="lille_score"
-                        category="case_arm"
-                    />
+                  <StackedLineChart
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="maddreys_score"
+                    category='case_arm'
+                    title="Maddrey's Discriminant Function Score Clinical Trial"
+                  />
+                  <SummaryBoxplotChart
+                    title={'Lille Score Clinical Trial'}
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    attribute="lille_score"
+                    category="case_arm"
+                  />
                 </div>
               }
-              {
-                // this.props.guppyConfig.type == "aliquot" &&
-                // <div style={{height: 500}}>
-                //   <div className='exploration_chart__title-box'>
-                //     <p className='exploration-chart__title'>Aliquo Flow</p>
-                //   </div>
-                //   <MyResponsiveSankey />
-                // </div>
+
+              {this.props.guppyConfig.type == "molecular_test"
+                && this.props.totalCount != null && this.props.totalCount < 10000 &&
+                chartData.countItems[0].value > 0 &&
+                <div>
+                  <MolecularTestTab
+                    casecount={chartData.countItems[0].value}
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                  />
+                </div>
               }
-              { this.props.guppyConfig.type == "molecular_test" 
-              && this.props.totalCount != null && this.props.totalCount <10000 &&
-               chartData.countItems[0].value>0 &&
-                <div> 
-                    <MolecularTestTab
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                    />
-                  </div>
-                }
             </div>
-            
           )
         }
         {
@@ -391,18 +372,18 @@ class ExplorerVisualization extends React.Component {
 }
 
 ExplorerVisualization.propTypes = {
-  totalCount: PropTypes.number, // inherited from GuppyWrapper
-  aggsData: PropTypes.object, // inherited from GuppyWrapper
-  aggsDataIsLoading: PropTypes.bool, // inherited from GuppyWrapper
-  filter: PropTypes.object, // inherited from GuppyWrapper
-  fetchAndUpdateRawData: PropTypes.func, // inherited from GuppyWrapper
-  downloadRawDataByFields: PropTypes.func, // inherited from GuppyWrapper
-  downloadRawData: PropTypes.func, // inherited from GuppyWrapper
-  getTotalCountsByTypeAndFilter: PropTypes.func, // inherited from GuppyWrapper
-  downloadRawDataByTypeAndFilter: PropTypes.func, // inherited from GuppyWrapper
-  rawData: PropTypes.array, // inherited from GuppyWrapper
-  allFields: PropTypes.array, // inherited from GuppyWrapper
-  accessibleFieldObject: PropTypes.object, // inherited from GuppyWrapper
+  totalCount: PropTypes.number,
+  aggsData: PropTypes.object,
+  aggsDataIsLoading: PropTypes.bool,
+  filter: PropTypes.object,
+  fetchAndUpdateRawData: PropTypes.func,
+  downloadRawDataByFields: PropTypes.func,
+  downloadRawData: PropTypes.func,
+  getTotalCountsByTypeAndFilter: PropTypes.func,
+  downloadRawDataByTypeAndFilter: PropTypes.func,
+  rawData: PropTypes.array,
+  allFields: PropTypes.array,
+  accessibleFieldObject: PropTypes.object,
   history: PropTypes.object.isRequired,
   className: PropTypes.string,
   chartConfig: ChartConfigType,
@@ -420,11 +401,11 @@ ExplorerVisualization.defaultProps = {
   aggsData: {},
   aggsDataIsLoading: false,
   filter: {},
-  fetchAndUpdateRawData: () => {},
-  downloadRawDataByFields: () => {},
-  downloadRawData: () => {},
-  getTotalCountsByTypeAndFilter: () => {},
-  downloadRawDataByTypeAndFilter: () => {},
+  fetchAndUpdateRawData: () => { },
+  downloadRawDataByFields: () => { },
+  downloadRawData: () => { },
+  getTotalCountsByTypeAndFilter: () => { },
+  downloadRawDataByTypeAndFilter: () => { },
   rawData: [],
   allFields: [],
   accessibleFieldObject: {},
