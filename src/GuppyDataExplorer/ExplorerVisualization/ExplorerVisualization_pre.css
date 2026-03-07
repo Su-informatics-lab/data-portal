@@ -57,14 +57,14 @@
   box-sizing: border-box;
 }
 
-/* 图表标题文字换行支持 */
+/* Chart title text wrap support */
 .recharts-text.recharts-label {
   white-space: pre-line;
   word-wrap: break-word;
   word-break: break-word;
 }
 
-/* 特别处理长标题 */
+/* Special handling for long titles */
 .chart-title-wrapper {
   display: flex;
   flex-direction: column;
@@ -85,7 +85,7 @@
   max-width: 180px;
 }
 
-/* 对于图例文字换行 */
+/* Legend text wrap */
 .recharts-legend-wrapper {
   white-space: normal !important;
 }

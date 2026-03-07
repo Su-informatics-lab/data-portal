@@ -3,14 +3,14 @@ import { hostname } from './localconf';
 export * from './localconf'; // / eslint-disable-line
 
 /**
- * 动态获取 CSRF token，避免 module load 时 cookie 尚未设置导致 token 为空。
- * 每次请求前调用此函数以获取最新值。
+ * Dynamically get CSRF token to avoid empty token when cookie is not yet set at module load time.
+ * Call this function before each request to get the latest value.
  */
 export const getCsrfToken = () =>
   document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*=\s*([^;]*).*$)|^.*$/, '$1');
 
 /**
- * 返回带最新 CSRF token 的请求头，供 fetchWithCreds 等请求时使用。
+ * Returns request headers with the latest CSRF token for use with fetchWithCreds and similar requests.
  */
 export const getHeaders = () => ({
   Accept: 'application/json',
@@ -22,8 +22,8 @@ export const getHeaders = () => ({
  * Soon the CSRF cookie will not be readable, as
  * verracode cannot deal with cookies that are not http only.
  *
- * 请求 _status 端点，服务端会在响应中设置 csrftoken cookie。
- * getCsrfToken() 之后可从 document.cookie 读取。
+ * Requests the _status endpoint; the server will set the csrftoken cookie in the response.
+ * After getCsrfToken(), the token can be read from document.cookie.
  *
  * @return the csrf token
  */
