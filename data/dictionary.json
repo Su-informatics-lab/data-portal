@@ -847,8 +847,8 @@
     }
   },
   "_settings": {
-    "_dict_commit": "9eb22c037655dc02863f9e9922bfe2b66228286a",
-    "_dict_version": "2.1.1",
+    "_dict_commit": "619d611f808c16040c24c82bad5a8bc3cbce1c9b",
+    "_dict_version": "2.2.2",
     "enable_case_cache": false
   },
   "_terms": {
@@ -5096,7 +5096,7 @@
     "project": "*",
     "properties": {
       "actarm": {
-        "description": "Description of actual Arm. When an Arm is not planned, ACTARM will be “Unplanned Treatment”. Randomized subjects who were not treated will be given a value of “Not Treated”. Values should be “Screen Failure” for screen failures and “Not Assigned” for subjects not assigned to treatment. Restricted to values in Trial Arms in all other cases.",
+        "description": "Description of actual Arm. Randomized subjects who were not treated will be given a value of “Not Treated”. Restricted to values in  Trial Arms in all other cases.",
         "enum": [
           "Prednisone",
           "Anakinra + Zinc",
@@ -12477,11 +12477,13 @@
           "7",
           "14",
           "28",
+          "30",
           "60",
-          "90",
-          "180",
           "84",
-          "168"
+          "90",
+          "168",
+          "180",
+          "365"
         ]
       },
       "weight": {
@@ -15929,8 +15931,7 @@
           "Urine L-FABP",
           "Urine NGAL",
           "ORM1",
-          "AhR Activity",
-          "IL-1RA"
+          "AhR Activity"
         ]
       },
       "labs": {
@@ -21594,6 +21595,13 @@
       "study_name": {
         "type": [
           "string"
+        ]
+      },
+      "study_type": {
+        "description": "The type of the study, observational or clinical",
+        "enum": [
+          "obs",
+          "clinical"
         ]
       },
       "submitter_id": {

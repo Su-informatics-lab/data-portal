@@ -14,7 +14,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.2.0",
     "@fortawesome/react-fontawesome": "^0.1.0",
-    "@gen3/guppy": "^0.15.2",
+    "@gen3/guppy": "^0.18.0",
     "@gen3/ui-component": "^0.11.1",
     "@nivo/core": "^0.80.0",
     "@nivo/sankey": "^0.80.0",
@@ -190,7 +190,7 @@
   },
   "scripts": {
     "fix": "export NODE_OPTIONS=--openssl-legacy-provider",
-    "start": "HOSTNAME=demo.ardac.org NODE_ENV=dev APP=dev bash ./runWebpack.sh",
+    "start": "HOSTNAME=gen3-iudcc.cis230185.projects.jetstream-cloud.org/ NODE_ENV=dev APP=dev bash ./runWebpack.sh",
     "test": "jest",
     "relay": "node ./data/gqlSetup.js > src/gqlHelper.js && ./node_modules/.bin/relay-compiler --verbose --src src --exclude '**/__generated__/**' --exclude '**/node_modules/**' --schema ./data/schema.json --extensions js jsx",
     "schema": "node ./data/getSchema",

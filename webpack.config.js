@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 const basename = process.env.BASENAME || '/';
+const basenameWithTrailingSlash = basename.endsWith('/') ? basename : `${basename}/`;
 const pathPrefix = basename.endsWith('/') ? basename.slice(0, basename.length - 1) : basename;
 const app = process.env.APP || 'dev';
 
@@ -217,7 +218,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: '[name].js',
-    publicPath: basename,
+    publicPath: basenameWithTrailingSlash,
   },
   optimization,
   devtool,

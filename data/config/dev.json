@@ -169,7 +169,8 @@
     "categorical2Colors": [
       "#E69F00",
       "#009E73"
-    ]
+    ],
+    "systemUse": {}
   },
   "explorerConfig": [
     {
@@ -994,5 +995,8 @@
     "explorerFilterValuesToHide": [
       "no data"
     ]
-  }
+  },
+  "useArboristUI": true,
+  "showArboristAuthzOnProfile": true,
+  "showFenceAuthzOnProfile": false
 }
