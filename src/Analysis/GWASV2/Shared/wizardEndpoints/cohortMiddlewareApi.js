@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { cohortMiddlewarePath, wtsPath } from '../../../../localconf';
 import { fetchWithCreds } from '../../../../actions';
-import { headers } from '../../../../configs';
+import { getHeaders } from '../../../../configs';
 
 const hareConceptId = 2000007027;
 
@@ -25,7 +25,7 @@ export const fetchConceptStatsByHare = async (
   const reqBody = {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(variablesPayload),
   };
   const getConceptStats = await fetch(conceptStatsEndPoint, reqBody);
@@ -53,7 +53,7 @@ export const fetchOverlapInfo = async (
   const reqBody = {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(variablesPayload),
   };
   const getOverlapStats = await fetch(statsEndPoint, reqBody);
@@ -91,7 +91,7 @@ export const fetchConceptStatsByHareSubset = async (
   const reqBody = {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(variablesPayload),
   };
   const getConceptStats = await fetch(conceptStatsEndPoint, reqBody);
@@ -149,7 +149,7 @@ export const fetchCovariateStats = async (
   const reqBody = {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(covariateIds),
   };
   const getConceptStats = await fetch(conceptStatsEndpoint, reqBody);
@@ -170,7 +170,7 @@ export const fetchCovariates = async (sourceId) => {
   const reqBody = {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(allowedConceptTypes),
   };
   const getConcepts = await fetch(conceptEndpoint, reqBody);

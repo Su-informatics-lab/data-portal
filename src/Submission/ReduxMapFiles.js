@@ -3,12 +3,12 @@ import MapFiles from './MapFiles';
 import { fetchWithCreds } from '../actions';
 import { STARTING_DID, FETCH_LIMIT } from './utils';
 import { indexdPath, useIndexdAuthz, fenceDataPath } from '../localconf';
-import { headers } from '../configs';
+import { getHeaders } from '../configs';
 
 export const deleteFile = (file) => {
   const request = {
     credentials: 'include',
-    headers: { ...headers },
+    headers: { ...getHeaders() },
     method: 'DELETE',
   };
 

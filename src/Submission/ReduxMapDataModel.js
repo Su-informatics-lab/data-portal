@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import MapDataModel from './MapDataModel';
-import { headers, submissionApiPath } from '../configs';
+import { getHeaders, submissionApiPath } from '../configs';
 
 export const submitFiles = (program, project, params) => {
   const request = {
     credentials: 'include',
-    headers: { ...headers },
+    headers: { ...getHeaders() },
     method: 'POST',
     body: JSON.stringify(params),
   };

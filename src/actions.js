@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import {
   apiPath,
   userAPIPath,
-  headers,
+  getHeaders,
   hostname,
   submissionApiPath,
   graphqlPath,
@@ -57,7 +57,7 @@ export const fetchCreds = (opts) => {
   const { path = `${userAPIPath}user/`, method = 'GET', dispatch } = opts;
   const request = {
     credentials: 'include',
-    headers: { ...headers },
+    headers: { ...getHeaders() },
     method,
   };
   pendingRequest = fetch(path, request)
@@ -100,7 +100,7 @@ export const fetchWithCreds = (opts) => {
   }
   const request = {
     credentials: 'include',
-    headers: { ...headers, ...customHeaders },
+    headers: { ...getHeaders(), ...customHeaders },
     method,
     body,
   };

@@ -1,5 +1,5 @@
 import { gwasTemplate, gwasWorkflowPath } from '../../../localconf';
-import { headers } from '../../../configs';
+import { getHeaders } from '../../../configs';
 
 export const caseControlSubmission = async (
   sourceId,
@@ -35,7 +35,7 @@ export const caseControlSubmission = async (
   const res = await fetch(submitEndpoint, {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(requestBody),
   });
   return res;
@@ -75,7 +75,7 @@ export const quantitativeSubmission = async (
   const res = await fetch(submitEndpoint, {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: getHeaders(),
     body: JSON.stringify(requestBody),
   });
   return res;

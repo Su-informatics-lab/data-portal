@@ -5,14 +5,14 @@ import {
   Store,
 } from 'relay-runtime';
 
-import { headers, graphqlPath } from './configs';
+import { getHeaders, graphqlPath } from './configs';
 
 const store = new Store(new RecordSource());
 
 const fetchQuery = (operation, variables) => {
   const request = {
     credentials: 'same-origin',
-    headers: { ...headers },
+    headers: { ...getHeaders() },
     method: 'POST',
     body: JSON.stringify({
       query: operation.text,

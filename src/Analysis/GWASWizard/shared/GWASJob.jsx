@@ -13,13 +13,13 @@ import {
 import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import { gwasWorkflowPath } from '../../../localconf';
-import { headers } from '../../../configs';
+import { getHeaders } from '../../../configs';
 import { getPresignedUrl } from '../../AnalysisJob';
 import { gwasStatus } from './constants';
 
 const GWASJob = ({ workflow }) => {
   async function handleWorkflowOutput(url) {
-    const response = await fetch(url, { headers }).then((res) => res.json()).then((data) => data);
+    const response = await fetch(url, { headers: getHeaders() }).then((res) => res.json()).then((data) => data);
     if (response) {
       getPresignedUrl(JSON.parse(response.outputs.parameters[0].value).did, 'download')
         .then((res) => {
